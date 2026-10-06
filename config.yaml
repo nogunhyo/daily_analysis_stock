@@ -1,0 +1,209 @@
+# ─────────────────────────────────────────────────────────────
+# AI 에이전트 대중화 → "병목(bottleneck)"과 "해자(moat)" 종목 유니버스
+#
+# - 병목: 수요는 폭증하는데 공급을 빨리 늘릴 수 없는 구간 (가격 결정력 ↑)
+# - 해자: 경쟁자가 쉽게 따라올 수 없는 구조적 우위 (기술 독점, 전환비용, 규모)
+#
+# 종목 추가/삭제는 universe 목록만 수정하면 됩니다.
+#   ticker : 야후 파이낸스 티커 (한국 코스피 = 종목코드.KS, 코스닥 = 종목코드.KQ)
+#   market : US 또는 KR (벤치마크·호가단위·통화 표시에 사용)
+#   layer  : 어떤 병목 구간에 속하는지
+#   thesis : 투자 아이디어 한 줄 (리포트에 그대로 표시됨)
+# 아래 thesis는 2026년 중반까지 공개된 정보 기준의 요약이므로 주기적으로 점검하세요.
+# ─────────────────────────────────────────────────────────────
+
+settings:
+  top_n: 3                      # 매일 추천 종목 수 (조건 충족 종목이 적으면 더 적게 나감)
+  max_per_layer: 1              # 같은 병목 구간(layer의 '·' 앞부분)에서 최대 몇 종목까지 추천할지 (상관관계 분산)
+  risk_per_trade_pct: 1.0       # 1회 매매에서 감수할 손실 = 계좌의 1% (1차 진입분이 손절될 때 기준)
+  max_first_tranche_pct: 25.0   # 1차 진입 비중 상한 (계좌 대비 %)
+  pyramid_split: [50, 30, 20]   # 1차 / 2차(+1R) / 3차(+2R) 비중 비율
+  target_r: 3                   # 1차 목표 = 진입가 + 3R
+  atr_period: 14
+  pivot_lookback: 20            # 피벗 = 최근 20거래일 최고가
+  min_base_days: 5              # 피벗 이후 최소 5거래일 횡보해야 '진짜 돌파'로 인정 (연속 신고가는 제외)
+  stop_lookback: 10             # 구조적 손절 = 최근 10거래일 최저가 아래
+  min_stop_atr: 1.0             # 손절폭 최소 1 ATR (노이즈에 털리지 않게)
+  max_stop_atr: 2.0             # 손절폭 최대 2 ATR
+  breakout_buy_range_pct: 5     # 돌파 후 피벗 +5% 이내까지만 매수 허용
+  near_pivot_pct: 5             # 피벗까지 5% 이내면 '돌파 대기'
+  extended_atr: 3.0             # 21일 EMA보다 3 ATR 이상 위면 '과열'
+  extended_sma50_pct: 25        # 50일선보다 25% 이상 위면 '과열'
+  breakout_volume_ratio: 1.4    # 돌파일 거래량 ≥ 50일 평균의 1.4배면 '거래량 동반'
+  max_risk_pct_warn: 10         # 손절폭이 10% 넘으면 경고
+  earnings_warn_days: 7         # 실적발표 7일 이내면 경고·감점
+
+ai:
+  enabled: true                 # ANTHROPIC_API_KEY 가 없으면 자동으로 건너뜀
+  model: claude-opus-5-5
+  effort: medium                # low / medium / high
+  max_searches: 8               # 하루 웹검색 최대 횟수 (비용 상한)
+
+benchmarks:
+  US: QQQ                       # 나스닥100 ETF
+  KR: 069500.KS                 # KODEX 200 (코스피200 ETF)
+
+universe:
+  # ── 1. 연산 (추론 수요의 1차 병목) ───────────────────────────
+  - ticker: NVDA
+    name: 엔비디아
+    market: US
+    layer: 연산·GPU
+    thesis: "에이전트는 작업 하나에 추론을 수십 번 반복 → 추론 연산 수요 급증. CUDA 생태계+NVLink 풀스택으로 고객 전환비용이 큼. 리스크: 빅테크 자체칩 확대"
+  - ticker: AVGO
+    name: 브로드컴
+    market: US
+    layer: 연산·맞춤형칩/네트워크
+    thesis: "구글 TPU 등 빅테크 맞춤형 AI칩(ASIC) 설계 파트너 + 데이터센터 이더넷 스위치칩 강자. 장기 공동설계 관계가 해자. 리스크: 소수 고객 의존"
+  - ticker: AMD
+    name: AMD
+    market: US
+    layer: 연산·GPU/CPU
+    thesis: "엔비디아 대안 GPU(MI 시리즈)와 서버 CPU(EPYC). 에이전트는 도구 실행에 CPU도 많이 씀. 해자는 엔비디아보다 약한 '2번째 공급자' 위치"
+
+  # ── 2. 제조 (모든 AI칩이 거쳐야 하는 관문) ────────────────────
+  - ticker: TSM
+    name: TSMC
+    market: US
+    layer: 파운드리·첨단패키징
+    thesis: "최첨단 공정과 CoWoS(GPU와 HBM을 한 판에 붙이는 패키징)를 사실상 독점 → 거의 모든 AI칩의 병목. 리스크: 대만 지정학"
+  - ticker: ASML
+    name: ASML
+    market: US
+    layer: 장비·EUV
+    thesis: "최첨단 칩 제조에 필수인 EUV 노광장비 세계 유일 공급사. 리스크: 대중국 수출규제, 고객 설비투자 사이클"
+  - ticker: 042700.KS
+    name: 한미반도체
+    market: KR
+    layer: 장비·HBM 본더
+    thesis: "HBM을 층층이 쌓을 때 쓰는 TC본더(열압착 접합 장비) 선두. HBM 증설 = 장비 수요. 리스크: 고객 집중, 경쟁사 진입"
+
+  # ── 3. 메모리 (긴 문맥·기억 = 메모리 병목) ────────────────────
+  - ticker: 000660.KS
+    name: SK하이닉스
+    market: KR
+    layer: 메모리·HBM
+    thesis: "에이전트는 긴 대화·문서를 기억해야 함(KV캐시) → GPU 옆 고대역폭 메모리(HBM) 수요 급증. HBM 점유율·수율 선두. 리스크: 메모리 사이클, 경쟁사 추격"
+  - ticker: 005930.KS
+    name: 삼성전자
+    market: KR
+    layer: 메모리·파운드리
+    thesis: "HBM 추격 + 서버용 D램·SSD 수요 확대 수혜. 압도적 생산 규모가 해자. 리스크: HBM 경쟁력 회복 속도"
+  - ticker: MU
+    name: 마이크론
+    market: US
+    layer: 메모리·HBM
+    thesis: "미국 유일 대형 메모리사, HBM 3강 중 하나. 리스크: 메모리 가격 사이클"
+
+  # ── 4. 연결 (GPU 수만 개를 잇는 대역폭 병목) ──────────────────
+  - ticker: ANET
+    name: 아리스타 네트웍스
+    market: US
+    layer: 네트워크·스위치
+    thesis: "GPU 클러스터를 묶는 AI 데이터센터 이더넷 스위치 선두. 안정적인 네트워크 OS(EOS)가 해자"
+  - ticker: MRVL
+    name: 마벨
+    market: US
+    layer: 네트워크·광DSP/맞춤형칩
+    thesis: "광통신용 DSP칩(전기↔빛 신호 변환) 강자 + 맞춤형 AI칩. 리스크: 맞춤형칩 고객 이탈"
+  - ticker: CRDO
+    name: 크레도
+    market: US
+    layer: 네트워크·고속케이블
+    thesis: "서버 간 고속 연결용 AEC(신호 증폭칩 내장 구리 케이블) 선두. 고성장이지만 변동성 큼"
+  - ticker: ALAB
+    name: 아스테라 랩스
+    market: US
+    layer: 네트워크·칩간연결
+    thesis: "GPU·CPU·메모리 사이 신호를 이어주는 PCIe/CXL 리타이머·스위치칩. 신생·고변동"
+  - ticker: LITE
+    name: 루멘텀
+    market: US
+    layer: 네트워크·광레이저
+    thesis: "800G/1.6T 광트랜시버의 핵심 부품인 레이저(EML) 공급이 병목. 리스크: 광부품 업황 변동"
+  - ticker: COHR
+    name: 코히런트
+    market: US
+    layer: 네트워크·광트랜시버
+    thesis: "광트랜시버·레이저 수직계열화. 리스크: 부채, 가격 경쟁"
+  - ticker: NET
+    name: 클라우드플레어
+    market: US
+    layer: 소프트웨어·엣지네트워크/보안
+    thesis: "전 세계 엣지 네트워크로 AI 크롤러·에이전트 트래픽 관리와 과금 인프라 제공. 리스크: 높은 밸류에이션"
+
+  # ── 5. 전력·냉각 (데이터센터 최대 병목) ──────────────────────
+  - ticker: VRT
+    name: 버티브
+    market: US
+    layer: 전력·냉각
+    thesis: "데이터센터 전력장비와 액체냉각(칩 발열 해결) 선두. GPU 발열이 커질수록 수요 증가"
+  - ticker: GEV
+    name: GE 버노바
+    market: US
+    layer: 전력·가스터빈/전력망
+    thesis: "데이터센터용 가스터빈 수주잔고가 수년치 → 공급 병목. 전력망 장비도 보유"
+  - ticker: ETN
+    name: 이튼
+    market: US
+    layer: 전력·배전/UPS
+    thesis: "배전·UPS(무정전 전원) 등 데이터센터 전력 인프라. 안정적 해자"
+  - ticker: CEG
+    name: 컨스텔레이션 에너지
+    market: US
+    layer: 전력·원전
+    thesis: "미국 최대 원전 운영사. 24시간 무탄소 전력을 빅테크에 장기계약(PPA)으로 공급. 리스크: 규제·전력가격"
+  - ticker: 267260.KS
+    name: HD현대일렉트릭
+    market: KR
+    layer: 전력·초고압변압기
+    thesis: "초고압 변압기는 주문~납품이 수년 걸리는 병목 품목. 북미 데이터센터·전력망 수주"
+  - ticker: 298040.KS
+    name: 효성중공업
+    market: KR
+    layer: 전력·변압기/차단기
+    thesis: "초고압 변압기·차단기, 미국 현지 공장 보유로 북미 병목 수혜"
+  - ticker: 010120.KS
+    name: LS ELECTRIC
+    market: KR
+    layer: 전력·배전
+    thesis: "배전반·변압기 등 전력기기, 북미 데이터센터 수주 확대"
+  - ticker: 034020.KS
+    name: 두산에너빌리티
+    market: KR
+    layer: 전력·가스터빈/원전
+    thesis: "대형 가스터빈과 원전 주기기·SMR(소형모듈원전) 제작 역량. 전력 설비 병목 수혜"
+
+  # ── 6. 플랫폼 (에이전트를 실제로 돌리는 곳) ───────────────────
+  - ticker: MSFT
+    name: 마이크로소프트
+    market: US
+    layer: 플랫폼·클라우드
+    thesis: "Azure + Copilot/에이전트 플랫폼. 기업 고객 기반(오피스·윈도우)이 해자"
+  - ticker: GOOGL
+    name: 알파벳
+    market: US
+    layer: 플랫폼·클라우드/자체칩
+    thesis: "자체 TPU + Gemini 모델 + 클라우드 수직계열화로 추론 원가 경쟁력"
+  - ticker: AMZN
+    name: 아마존
+    market: US
+    layer: 플랫폼·클라우드/자체칩
+    thesis: "최대 클라우드 AWS, 자체칩(Trainium)으로 추론 원가 절감"
+
+  # ── 7. 소프트웨어 (에이전트가 기업 데이터·업무에 접근하는 관문) ──
+  - ticker: PLTR
+    name: 팔란티어
+    market: US
+    layer: 소프트웨어·데이터/에이전트
+    thesis: "온톨로지(기업 데이터를 AI가 이해하는 구조로 정리)로 에이전트를 실제 업무에 투입. 리스크: 매우 높은 밸류에이션"
+  - ticker: NOW
+    name: 서비스나우
+    market: US
+    layer: 소프트웨어·워크플로
+    thesis: "기업 업무 프로세스 플랫폼 위에서 에이전트 실행. 높은 전환비용. 리스크: 에이전트가 SaaS 좌석수를 대체할 가능성"
+  - ticker: CRWD
+    name: 크라우드스트라이크
+    market: US
+    layer: 소프트웨어·보안
+    thesis: "에이전트가 늘수록 '누가 무엇에 접근하나'를 지키는 보안 수요 증가. 엔드포인트 보안 선두"

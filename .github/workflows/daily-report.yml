@@ -1,0 +1,59 @@
+name: Daily AI-Agent Stock Report
+
+on:
+  schedule:
+    # 월~토 06:50 KST (= 일~금 21:50 UTC). GitHub 스케줄은 수 분~수십 분 늦게 시작될 수 있어
+    # 07시 도착을 목표로 10분 일찍 잡음. 일요일은 새 시세가 없어 제외.
+    - cron: "50 21 * * 0-5"
+  workflow_dispatch:
+    inputs:
+      no_ai:
+        description: "AI 코멘트 생략"
+        type: boolean
+        default: false
+
+permissions:
+  contents: read
+
+concurrency:
+  group: daily-report
+  cancel-in-progress: false
+
+jobs:
+  report:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+          cache: pip
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Run tests
+        run: pip install pytest && python -m pytest -q
+
+      - name: Generate and send report
+        id: report
+        env:
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+        run: python -m stock_agent ${{ inputs.no_ai && '--no-ai' || '' }}
+
+      # 설치·테스트 단계에서 실패하면 리포트 스크립트가 실행되지 않으므로 여기서 알림
+      # (리포트 스크립트 자체 실패는 스크립트가 직접 알림을 보냄)
+      - name: Notify setup failure
+        if: failure() && steps.report.outcome != 'failure'
+        env:
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        run: |
+          curl -sS -X POST "https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage" \
+            -d chat_id="${TELEGRAM_CHAT_ID}" \
+            --data-urlencode text="❌ 오늘 리포트 준비 단계(설치/테스트) 실패: ${RUN_URL}"

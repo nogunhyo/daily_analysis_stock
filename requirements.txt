@@ -1,0 +1,6 @@
+yfinance>=0.2.66
+pandas>=2.2
+numpy>=1.26
+requests>=2.31
+PyYAML>=6.0
+anthropic>=1.11

@@ -1,0 +1,128 @@
+"""텔레그램 봇 API 발송.
+
+chat id 확인:  python -m stock_agent.telegram --get-chat-id
+(먼저 텔레그램에서 내 봇에게 아무 메시지나 보낸 뒤 실행)
+"""
+from __future__ import annotations
+
+import argparse
+import logging
+import os
+import re
+import sys
+import time
+
+import requests
+
+log = logging.getLogger(__name__)
+
+API = "https://api.telegram.org/bot{token}/{method}"
+MAX_LEN = 4000  # 텔레그램 한도 4096자, 여유분 확보
+
+
+def split_message(text: str, limit: int = MAX_LEN) -> list[str]:
+    """줄 단위로 limit 이하 조각으로 분할 (HTML 태그가 줄을 넘지 않도록 작성되어 있음)."""
+    chunks, current = [], ""
+    for line in text.split("\n"):
+        while len(line) > limit:  # 한 줄이 너무 긴 예외 상황
+            if current:
+                chunks.append(current)
+                current = ""
+            chunks.append(line[:limit])
+            line = line[limit:]
+        candidate = f"{current}\n{line}" if current else line
+        if len(candidate) > limit:
+            chunks.append(current)
+            current = line
+        else:
+            current = candidate
+    if current:
+        chunks.append(current)
+    return chunks
+
+
+def _strip_html(text: str) -> str:
+    text = re.sub(r"<[^>]+>", "", text)
+    return text.replace("&lt;", "<").replace("&gt;", ">").replace("&quot;", '"').replace("&amp;", "&")
+
+
+def _post(token: str, method: str, payload: dict, retries: int = 4) -> requests.Response:
+    url = API.format(token=token, method=method)
+    for attempt in range(retries):
+        try:
+            resp = requests.post(url, json=payload, timeout=30)
+        except requests.RequestException as exc:
+            log.warning("텔레그램 연결 실패 (%d/%d): %s", attempt + 1, retries, exc)
+            time.sleep(2 ** (attempt + 1))
+            continue
+        if resp.status_code == 429:
+            wait = resp.json().get("parameters", {}).get("retry_after", 5)
+            time.sleep(wait + 1)
+            continue
+        return resp
+    raise RuntimeError("텔레그램 발송 재시도 초과")
+
+
+def send_message(token: str, chat_id: str, text: str) -> None:
+    for chunk in split_message(text):
+        payload = {
+            "chat_id": chat_id,
+            "text": chunk,
+            "parse_mode": "HTML",
+            "disable_web_page_preview": True,
+        }
+        resp = _post(token, "sendMessage", payload)
+        if resp.status_code == 400 and "parse" in resp.text.lower():
+            # HTML 파싱 오류 시 서식 없이라도 보낸다
+            log.warning("HTML 파싱 오류 → 일반 텍스트로 재발송: %s", resp.text[:200])
+            payload.pop("parse_mode")
+            payload["text"] = _strip_html(chunk)
+            resp = _post(token, "sendMessage", payload)
+        if not resp.ok:
+            raise RuntimeError(f"텔레그램 발송 실패 {resp.status_code}: {resp.text[:300]}")
+        time.sleep(0.5)
+
+
+def send_all(messages: list[str]) -> None:
+    token = os.environ.get("TELEGRAM_BOT_TOKEN")
+    chat_id = os.environ.get("TELEGRAM_CHAT_ID")
+    if not token or not chat_id:
+        raise RuntimeError("TELEGRAM_BOT_TOKEN / TELEGRAM_CHAT_ID 환경변수가 필요합니다")
+    for msg in messages:
+        send_message(token, chat_id, msg)
+
+
+def _print_chat_ids() -> int:
+    token = os.environ.get("TELEGRAM_BOT_TOKEN")
+    if not token:
+        print("TELEGRAM_BOT_TOKEN 환경변수를 먼저 설정하세요.")
+        return 1
+    resp = requests.get(API.format(token=token, method="getUpdates"), timeout=30)
+    data = resp.json()
+    if not data.get("ok"):
+        print(f"오류: {data}")
+        return 1
+    seen = {}
+    for update in data.get("result", []):
+        msg = update.get("message") or update.get("channel_post") or {}
+        chat = msg.get("chat")
+        if chat:
+            seen[chat["id"]] = chat.get("username") or chat.get("title") or chat.get("first_name")
+    if not seen:
+        print("메시지가 없습니다. 텔레그램에서 봇에게 아무 메시지나 보낸 뒤 다시 실행하세요.")
+        return 1
+    for chat_id, name in seen.items():
+        print(f"chat_id={chat_id}  ({name})")
+    return 0
+
+
+if __name__ == "__main__":
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--get-chat-id", action="store_true", help="봇에게 온 메시지에서 chat id 출력")
+    parser.add_argument("--test", action="store_true", help="테스트 메시지 발송")
+    args = parser.parse_args()
+    if args.get_chat_id:
+        sys.exit(_print_chat_ids())
+    if args.test:
+        send_all(["✅ 텔레그램 연결 테스트 성공"])
+        print("발송 완료")
