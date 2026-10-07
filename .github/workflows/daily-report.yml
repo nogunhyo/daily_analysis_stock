@@ -11,6 +11,10 @@ on:
         description: "AI 코멘트 생략"
         type: boolean
         default: false
+      dry_run:
+        description: "텔레그램 발송 없이 시험 실행 (추천 기록 저장까지만)"
+        type: boolean
+        default: false
 
 permissions:
   contents: write   # 추천 결과 스냅샷(reports/)을 저장소에 기록하기 위해 필요
@@ -44,7 +48,10 @@ jobs:
           STOCK_TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
           STOCK_TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
-        run: python -m stock_agent --json reports/latest.json ${{ inputs.no_ai && '--no-ai' || '' }}
+        run: >-
+          python -m stock_agent --json reports/latest.json
+          ${{ inputs.no_ai && '--no-ai' || '' }}
+          ${{ inputs.dry_run && '--dry-run' || '' }}
 
       # 보낸 리포트와 똑같은 추천 결과를 저장소에 기록
       # - 07:07 Claude 코멘트 루틴이 이 파일을 읽어 같은 종목을 해설 (다시 계산하면 결과가 달라질 수 있음)
