@@ -68,7 +68,9 @@ AI 에이전트는 질문 하나에 추론을 수십 번 반복하고, 긴 문�
 
 ### ⑦ Claude 코멘트 루틴 (사용 중, API 요금 없음)
 매일 07:07(월~토) Claude 루틴이 07:00 리포트가 저장한 추천 결과(`reports/latest.json`)를 읽고 추천 종목 뉴스를 웹검색으로 확인해
-"최근 이슈 / 병목·해자 점검 / 리스크 / 셋업과 뉴스 일치 여부 / Claude 의견"을 **🤖 Claude 코멘트** 메시지로 따로 보냅니다.
+"한눈에 결론 / 뉴스(출처 번호) / 해자 / 강세·약세 근거 / 셋업과 뉴스 / Claude 의견"을 **🤖 Claude 코멘트** 메시지로 따로 보냅니다.
+- 모델 Opus 5.5 + ultracode: 종목별 조사 에이전트 → 반박형 검증 에이전트(누락 악재 점검·실적일 확인) → 테마 에이전트, 최대 7개
+- 출처 등급(공시·IR > 주요 언론 > 집계·의견 기사)을 두고, 의견(계획대로/신중/보류)은 정해진 조건으로만 바뀝니다
 - API가 아니라 **Claude 구독 사용량**에서 차감됩니다 (사용량 확인: claude.ai/settings/usage)
 - 루틴 관리(일시정지·수정·즉시 실행): https://claude.ai/code/routines
 - 루틴 지시문 사본: [`docs/claude_routine_prompt.md`](docs/claude_routine_prompt.md)
