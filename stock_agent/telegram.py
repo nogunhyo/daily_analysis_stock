@@ -20,6 +20,12 @@ API = "https://api.telegram.org/bot{token}/{method}"
 MAX_LEN = 4000  # 텔레그램 한도 4096자, 여유분 확보
 
 
+def _env(name: str) -> str | None:
+    """환경변수 읽기. 복사·붙여넣기로 섞인 공백/줄바꿈 제거 (토큰과 chat id에는 공백이 없음)."""
+    value = os.environ.get(name)
+    return "".join(value.split()) if value else None
+
+
 def split_message(text: str, limit: int = MAX_LEN) -> list[str]:
     """줄 단위로 limit 이하 조각으로 분할 (HTML 태그가 줄을 넘지 않도록 작성되어 있음)."""
     chunks, current = [], ""
@@ -84,8 +90,8 @@ def send_message(token: str, chat_id: str, text: str) -> None:
 
 
 def send_all(messages: list[str]) -> None:
-    token = os.environ.get("TELEGRAM_BOT_TOKEN")
-    chat_id = os.environ.get("TELEGRAM_CHAT_ID")
+    token = _env("TELEGRAM_BOT_TOKEN")
+    chat_id = _env("TELEGRAM_CHAT_ID")
     if not token or not chat_id:
         raise RuntimeError("TELEGRAM_BOT_TOKEN / TELEGRAM_CHAT_ID 환경변수가 필요합니다")
     for msg in messages:
@@ -93,7 +99,7 @@ def send_all(messages: list[str]) -> None:
 
 
 def _print_chat_ids() -> int:
-    token = os.environ.get("TELEGRAM_BOT_TOKEN")
+    token = _env("TELEGRAM_BOT_TOKEN")
     if not token:
         print("TELEGRAM_BOT_TOKEN 환경변수를 먼저 설정하세요.")
         return 1

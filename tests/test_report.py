@@ -58,3 +58,12 @@ def test_split_message_keeps_lines_and_limit():
 def test_split_message_handles_overlong_line():
     chunks = split_message("x" * 2500, limit=1000)
     assert [len(c) for c in chunks] == [1000, 1000, 500]
+
+
+def test_env_strips_pasted_whitespace(monkeypatch):
+    from stock_agent.telegram import _env
+
+    monkeypatch.setenv("TELEGRAM_BOT_TOKEN", " 123456:ABC def\n")
+    assert _env("TELEGRAM_BOT_TOKEN") == "123456:ABCdef"
+    monkeypatch.delenv("TELEGRAM_BOT_TOKEN")
+    assert _env("TELEGRAM_BOT_TOKEN") is None
