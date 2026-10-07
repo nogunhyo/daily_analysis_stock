@@ -78,8 +78,9 @@ jobs:
           TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
           RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
         run: |
-          token=$(printf %s "$TELEGRAM_BOT_TOKEN" | tr -d '[:space:]')
-          chat=$(printf %s "$TELEGRAM_CHAT_ID" | tr -d '[:space:]')
-          curl -sS -o /dev/null -X POST "https://api.telegram.org/bot${token}/sendMessage" \
+          # 파이썬 쪽(read_token/read_chat_id)과 같은 방식으로 값 정리: 공백 제거 후 토큰·숫자 부분만 추출
+          token=$(printf %s "$TELEGRAM_BOT_TOKEN" | tr -d '[:space:]' | grep -oE '[0-9]{5,}:[A-Za-z0-9_-]{35}' | head -1)
+          chat=$(printf %s "$TELEGRAM_CHAT_ID" | tr -d '[:space:]' | grep -oE -- '-?[0-9]{5,}' | tail -1)
+          curl -sS --fail-with-body -o /dev/null -X POST "https://api.telegram.org/bot${token}/sendMessage" \
             -d chat_id="${chat}" \
             --data-urlencode text="❌ 오늘 리포트 준비 단계(설치/테스트) 실패: ${RUN_URL}"
