@@ -26,6 +26,45 @@ def _env(name: str) -> str | None:
     return "".join(value.split()) if value else None
 
 
+_TOKEN_STD = re.compile(r"\d{5,}:[A-Za-z0-9_-]{35}")  # BotFather 토큰: 봇번호:35자
+_TOKEN_ANY = re.compile(r"\d+:[A-Za-z0-9_-]{30,}")  # 길이가 다른 토큰 대비
+_CHAT_ID_FULL = re.compile(r"-?\d+")
+_CHAT_ID_PART = re.compile(r"-?\d{5,}(?![\d:])")
+
+
+def read_token() -> str | None:
+    """TELEGRAM_BOT_TOKEN 읽기. 이름·콜론·따옴표 등이 섞여 저장돼 있으면 토큰 부분만 사용.
+
+    토큰 값은 로그에 절대 남기지 않는다."""
+    raw = _env("TELEGRAM_BOT_TOKEN")
+    if not raw:
+        return None
+    if _TOKEN_STD.fullmatch(raw):
+        return raw
+    match = _TOKEN_STD.search(raw)
+    if match:
+        log.warning("TELEGRAM_BOT_TOKEN 에 토큰 외 글자가 섞여 있어 토큰 부분만 사용합니다 (Secret 값 정리 권장)")
+        return match.group(0)
+    if _TOKEN_ANY.fullmatch(raw):
+        return raw
+    raise RuntimeError(
+        "TELEGRAM_BOT_TOKEN 형식 오류: BotFather가 준 '숫자:영문' 토큰을 찾을 수 없습니다. Secret 값을 확인하세요"
+    )
+
+
+def read_chat_id() -> str | None:
+    raw = _env("TELEGRAM_CHAT_ID")
+    if not raw:
+        return None
+    if _CHAT_ID_FULL.fullmatch(raw):
+        return raw
+    matches = _CHAT_ID_PART.findall(raw)
+    if not matches:
+        raise RuntimeError("TELEGRAM_CHAT_ID 형식 오류: 숫자로 된 chat id를 찾을 수 없습니다. Secret 값을 확인하세요")
+    log.warning("TELEGRAM_CHAT_ID 에 숫자 외 글자가 섞여 있어 숫자 부분만 사용합니다 (Secret 값 정리 권장)")
+    return matches[-1]
+
+
 def split_message(text: str, limit: int = MAX_LEN) -> list[str]:
     """줄 단위로 limit 이하 조각으로 분할 (HTML 태그가 줄을 넘지 않도록 작성되어 있음)."""
     chunks, current = [], ""
@@ -90,8 +129,8 @@ def send_message(token: str, chat_id: str, text: str) -> None:
 
 
 def send_all(messages: list[str]) -> None:
-    token = _env("TELEGRAM_BOT_TOKEN")
-    chat_id = _env("TELEGRAM_CHAT_ID")
+    token = read_token()
+    chat_id = read_chat_id()
     if not token or not chat_id:
         raise RuntimeError("TELEGRAM_BOT_TOKEN / TELEGRAM_CHAT_ID 환경변수가 필요합니다")
     for msg in messages:
@@ -99,7 +138,7 @@ def send_all(messages: list[str]) -> None:
 
 
 def _print_chat_ids() -> int:
-    token = _env("TELEGRAM_BOT_TOKEN")
+    token = read_token()
     if not token:
         print("TELEGRAM_BOT_TOKEN 환경변수를 먼저 설정하세요.")
         return 1

@@ -67,3 +67,34 @@ def test_env_strips_pasted_whitespace(monkeypatch):
     assert _env("TELEGRAM_BOT_TOKEN") == "123456:ABCdef"
     monkeypatch.delenv("TELEGRAM_BOT_TOKEN")
     assert _env("TELEGRAM_BOT_TOKEN") is None
+
+
+TOKEN = "123456789:" + "A" * 20 + "b_c-" + "d" * 11  # 35자
+
+
+def test_read_token_clean_and_messy(monkeypatch):
+    from stock_agent.telegram import read_token
+
+    for raw in (TOKEN, f" {TOKEN}\n", f":{TOKEN}", f"TELEGRAM_BOT_TOKEN :{TOKEN}",
+                TOKEN.replace(":", ": "), f'"{TOKEN}"', f"{TOKEN}\nTELEGRAM_CHAT_ID 6920194268"):
+        monkeypatch.setenv("TELEGRAM_BOT_TOKEN", raw)
+        assert read_token() == TOKEN, raw
+
+
+def test_read_token_rejects_garbage(monkeypatch):
+    import pytest
+    from stock_agent.telegram import read_token
+
+    monkeypatch.setenv("TELEGRAM_BOT_TOKEN", "not-a-token")
+    with pytest.raises(RuntimeError, match="형식 오류"):
+        read_token()
+
+
+def test_read_chat_id(monkeypatch):
+    from stock_agent.telegram import read_chat_id
+
+    for raw, want in (("6920194268", "6920194268"), (" 6920194268\n", "6920194268"),
+                      ("-1001234567890", "-1001234567890"), ("TELEGRAM_CHAT_ID : 6920194268", "6920194268"),
+                      (f"{TOKEN} TELEGRAM_CHAT_ID 6920194268", "6920194268")):
+        monkeypatch.setenv("TELEGRAM_CHAT_ID", raw)
+        assert read_chat_id() == want, raw
