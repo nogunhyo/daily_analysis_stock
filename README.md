@@ -66,7 +66,17 @@ AI 에이전트는 질문 하나에 추론을 수십 번 반복하고, 긴 문�
 - 실적발표 7일 이내면 −10점 + 경고 (발표 다음 날 갭이 생기면 손절가가 의미 없어짐)
 - 같은 병목 구간(예: 메모리)에서는 1종목만 추천 → 같이 오르고 같이 빠지는 쏠림 방지
 
-### ⑦ AI 코멘트 (선택)
+### ⑦ Claude 코멘트 루틴 (사용 중, API 요금 없음)
+매일 07:07(월~토) Claude 루틴이 같은 계산을 다시 돌린 뒤 추천 종목 뉴스를 웹검색으로 확인해
+"최근 이슈 / 병목·해자 점검 / 리스크 / 셋업과 뉴스 일치 여부 / Claude 의견"을 **🤖 Claude 코멘트** 메시지로 따로 보냅니다.
+- API가 아니라 **Claude 구독 사용량**에서 차감됩니다 (사용량 확인: claude.ai/settings/usage)
+- 루틴 관리(일시정지·수정·즉시 실행): https://claude.ai/code/routines
+- 루틴 지시문 사본: [`docs/claude_routine_prompt.md`](docs/claude_routine_prompt.md)
+- 루틴이 실패하거나 사용량 한도에 걸려도 07:00 숫자 리포트(GitHub Actions)는 그대로 옵니다
+- Claude 클라우드 환경의 Environment variables 에 `STOCK_TELEGRAM_BOT_TOKEN`, `STOCK_TELEGRAM_CHAT_ID` 가 필요합니다
+  (같은 환경의 다른 루틴이 쓰는 `TELEGRAM_*` 과 섞이지 않도록 `STOCK_` 접두어 사용)
+
+### ⑧ API 방식 AI 코멘트 (선택, 현재 미사용)
 `ANTHROPIC_API_KEY`가 있으면 Claude(기본 `claude-opus-5-5`)가 웹검색으로 각 추천 종목의 최근 2주 뉴스를 찾아
 "병목·해자가 유지/강화/약화 되었는지", "기술적 셋업과 뉴스가 일치하는지"를 출처 링크와 함께 정리합니다.
 안전 분류기가 요청을 거절할 경우 서버가 자동으로 대체 모델로 다시 시도하도록 `fallbacks: "default"`를 켜 두었습니다.
@@ -86,7 +96,7 @@ AI 에이전트는 질문 하나에 추론을 수십 번 반복하고, 긴 문�
    `https://api.telegram.org/bot<토큰>/getUpdates`
 3. 결과에서 `"chat":{"id":123456789` 의 숫자가 chat id입니다
 
-   (로컬 파이썬이 있으면 `TELEGRAM_BOT_TOKEN=<토큰> python -m stock_agent.telegram --get-chat-id` 로도 확인 가능)
+   (로컬 파이썬이 있으면 `STOCK_TELEGRAM_BOT_TOKEN=<토큰> python -m stock_agent.telegram --get-chat-id` 로도 확인 가능)
 
 ### Step 3. GitHub Secrets 등록
 저장소 → **Settings → Secrets and variables → Actions → New repository secret**
@@ -95,7 +105,9 @@ AI 에이전트는 질문 하나에 추론을 수십 번 반복하고, 긴 문�
 |---|---|---|
 | `TELEGRAM_BOT_TOKEN` | Step 1의 토큰 | 필수 |
 | `TELEGRAM_CHAT_ID` | Step 2의 숫자 | 필수 |
-| `ANTHROPIC_API_KEY` | https://console.anthropic.com 에서 발급 | 선택 (없으면 AI 코멘트만 빠짐) |
+| `ANTHROPIC_API_KEY` | https://console.anthropic.com 에서 발급 | 선택 (없으면 API 방식 AI 코멘트만 빠짐) |
+
+GitHub Secret 이름은 `TELEGRAM_*` 그대로 두고, 워크플로가 프로그램에 `STOCK_TELEGRAM_*` 이름으로 넘겨 줍니다.
 
 ### Step 4. 수동 실행으로 테스트
 저장소 → **Actions → Daily AI-Agent Stock Report → Run workflow**
@@ -113,7 +125,8 @@ AI 에이전트는 질문 하나에 추론을 수십 번 반복하고, 긴 문�
 ## 3. 비용
 - GitHub Actions: 공개 저장소 무료, 비공개 저장소도 무료 한도(월 2,000분) 안에서 충분 (1회 약 2~3분)
 - 야후 파이낸스·텔레그램: 무료
-- Claude API(선택): 1회에 웹검색 최대 8번 + 토큰 비용. **추정치로 하루 약 $0.2~0.5**
+- Claude 코멘트 루틴: API 요금 없음, 구독 사용량에서 차감 (1회 사용량은 실제 실행 후 확인 필요)
+- Claude API(선택, 현재 미사용): 1회에 웹검색 최대 8번 + 토큰 비용. **추정치로 하루 약 $0.2~0.5**
   (검색 결과 길이에 따라 달라지며 실제 금액은 Anthropic 콘솔에서 확인 필요).
   줄이려면 `config.yaml`의 `ai.max_searches`를 낮추거나 `ai.effort`를 `low`로 바꾸세요.
 
@@ -145,6 +158,8 @@ AI 에이전트는 질문 하나에 추론을 수십 번 반복하고, 긴 문�
 ```bash
 pip install -r requirements.txt
 python -m stock_agent --dry-run --no-ai   # 텔레그램 발송 없이 화면 출력
+python -m stock_agent --dry-run --no-ai --json picks.json   # 추천 결과 JSON 저장
+python -m stock_agent.telegram --send-file note.txt --title "제목"   # 텍스트 파일 발송
 python -m pytest -q                       # 테스트
 ```
 
@@ -155,6 +170,7 @@ stock_agent/data.py            시세·실적일·재무 수집 (yfinance)
 stock_agent/analysis.py        지표·추세·셋업·진입/손절/피라미딩 계산
 stock_agent/ai_commentary.py   Claude 웹검색 코멘트 (선택)
 stock_agent/report.py          텔레그램 메시지 작성
-stock_agent/telegram.py        텔레그램 발송
+stock_agent/telegram.py        텔레그램 발송 (STOCK_TELEGRAM_* 환경변수)
+docs/claude_routine_prompt.md  Claude 코멘트 루틴 지시문 사본
 .github/workflows/daily-report.yml   매일 자동 실행
 ```

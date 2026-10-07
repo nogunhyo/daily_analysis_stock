@@ -40,8 +40,9 @@ jobs:
       - name: Generate and send report
         id: report
         env:
-          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
-          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+          # GitHub Secret 이름은 TELEGRAM_*, 프로그램은 STOCK_TELEGRAM_* 를 읽음
+          STOCK_TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          STOCK_TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
         run: python -m stock_agent ${{ inputs.no_ai && '--no-ai' || '' }}
 

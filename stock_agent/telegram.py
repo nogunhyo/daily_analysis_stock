@@ -11,6 +11,7 @@ import os
 import re
 import sys
 import time
+from pathlib import Path
 import unicodedata
 
 import requests
@@ -18,6 +19,11 @@ import requests
 log = logging.getLogger(__name__)
 
 API = "https://api.telegram.org/bot{token}/{method}"
+
+# 같은 Claude 클라우드 환경에서 다른 루틴이 TELEGRAM_* 이름으로 다른 봇을 쓰고 있으므로
+# 이 프로젝트는 STOCK_ 접두어가 붙은 이름만 읽는다 (다른 봇으로 잘못 보내는 일 방지).
+TOKEN_VAR = "STOCK_TELEGRAM_BOT_TOKEN"
+CHAT_ID_VAR = "STOCK_TELEGRAM_CHAT_ID"
 MAX_LEN = 4000  # 텔레그램 한도 4096자, 여유분 확보
 
 
@@ -55,28 +61,28 @@ _CHAT_ID_PART = re.compile(r"-?\d{5,}(?![\d:])")
 
 
 def read_token() -> str | None:
-    """TELEGRAM_BOT_TOKEN 읽기. 이름·콜론·따옴표 등이 섞여 저장돼 있으면 토큰 부분만 사용.
+    """봇 토큰 읽기. 이름·콜론·따옴표 등이 섞여 저장돼 있으면 토큰 부분만 사용.
 
     토큰 값은 로그에 절대 남기지 않는다."""
-    raw = _env("TELEGRAM_BOT_TOKEN")
+    raw = _env(TOKEN_VAR)
     if not raw:
         return None
     if _TOKEN_STD.fullmatch(raw):
         return raw
     match = _TOKEN_STD.search(raw)
     if match:
-        log.warning("TELEGRAM_BOT_TOKEN 에 토큰 외 글자가 섞여 있어 토큰 부분만 사용합니다 (Secret 값 정리 권장)")
+        log.warning("%s 에 토큰 외 글자가 섞여 있어 토큰 부분만 사용합니다 (값 정리 권장)", TOKEN_VAR)
         return match.group(0)
     if _TOKEN_ANY.fullmatch(raw):
         return raw
     raise RuntimeError(
-        "TELEGRAM_BOT_TOKEN 형식 오류: BotFather가 준 '숫자:영문' 토큰을 찾을 수 없습니다. "
-        f"Secret 값을 확인하세요 [{describe_secret(raw)}]"
+        f"{TOKEN_VAR} 형식 오류: BotFather가 준 '숫자:영문' 토큰을 찾을 수 없습니다. "
+        f"저장된 값을 확인하세요 [{describe_secret(raw)}]"
     )
 
 
 def read_chat_id() -> str | None:
-    raw = _env("TELEGRAM_CHAT_ID")
+    raw = _env(CHAT_ID_VAR)
     if not raw:
         return None
     if _CHAT_ID_FULL.fullmatch(raw):
@@ -84,9 +90,9 @@ def read_chat_id() -> str | None:
     matches = _CHAT_ID_PART.findall(raw)
     if not matches:
         raise RuntimeError(
-            f"TELEGRAM_CHAT_ID 형식 오류: 숫자로 된 chat id를 찾을 수 없습니다 [{describe_secret(raw)}]"
+            f"{CHAT_ID_VAR} 형식 오류: 숫자로 된 chat id를 찾을 수 없습니다 [{describe_secret(raw)}]"
         )
-    log.warning("TELEGRAM_CHAT_ID 에 숫자 외 글자가 섞여 있어 숫자 부분만 사용합니다 (Secret 값 정리 권장)")
+    log.warning("%s 에 숫자 외 글자가 섞여 있어 숫자 부분만 사용합니다 (값 정리 권장)", CHAT_ID_VAR)
     return matches[-1]
 
 
@@ -157,7 +163,7 @@ def send_all(messages: list[str]) -> None:
     token = read_token()
     chat_id = read_chat_id()
     if not token or not chat_id:
-        raise RuntimeError("TELEGRAM_BOT_TOKEN / TELEGRAM_CHAT_ID 환경변수가 필요합니다")
+        raise RuntimeError(f"{TOKEN_VAR} / {CHAT_ID_VAR} 환경변수가 필요합니다")
     for msg in messages:
         send_message(token, chat_id, msg)
 
@@ -165,7 +171,7 @@ def send_all(messages: list[str]) -> None:
 def _print_chat_ids() -> int:
     token = read_token()
     if not token:
-        print("TELEGRAM_BOT_TOKEN 환경변수를 먼저 설정하세요.")
+        print(f"{TOKEN_VAR} 환경변수를 먼저 설정하세요.")
         return 1
     resp = requests.get(API.format(token=token, method="getUpdates"), timeout=30)
     data = resp.json()
@@ -186,13 +192,34 @@ def _print_chat_ids() -> int:
     return 0
 
 
-if __name__ == "__main__":
-    parser = argparse.ArgumentParser()
+def main() -> int:
+    parser = argparse.ArgumentParser(description="텔레그램 도구")
     parser.add_argument("--get-chat-id", action="store_true", help="봇에게 온 메시지에서 chat id 출력")
     parser.add_argument("--test", action="store_true", help="테스트 메시지 발송")
+    parser.add_argument("--send-file", metavar="PATH", help="텍스트 파일 내용을 발송 (Claude 루틴 코멘트용)")
+    parser.add_argument("--title", default="🤖 Claude 코멘트", help="--send-file 메시지 제목")
     args = parser.parse_args()
+    logging.basicConfig(level=logging.INFO, format="%(levelname)s %(name)s: %(message)s")
+
     if args.get_chat_id:
-        sys.exit(_print_chat_ids())
+        return _print_chat_ids()
     if args.test:
         send_all(["✅ 텔레그램 연결 테스트 성공"])
         print("발송 완료")
+        return 0
+    if args.send_file:
+        from .report import build_text_message
+
+        text = Path(args.send_file).read_text(encoding="utf-8").strip()
+        if not text:
+            print("보낼 내용이 비어 있습니다.")
+            return 1
+        send_all([build_text_message(args.title, text)])
+        print("발송 완료")
+        return 0
+    parser.print_help()
+    return 1
+
+
+if __name__ == "__main__":
+    sys.exit(main())

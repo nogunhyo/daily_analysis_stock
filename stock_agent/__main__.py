@@ -3,11 +3,13 @@
     python -m stock_agent            # 분석 + 텔레그램 발송
     python -m stock_agent --dry-run  # 발송 없이 화면 출력
     python -m stock_agent --no-ai    # AI 코멘트 생략
+    python -m stock_agent --dry-run --no-ai --json picks.json  # 추천 결과를 JSON으로도 저장
 """
 from __future__ import annotations
 
 import argparse
 import html
+import json
 import logging
 import re
 import sys
@@ -20,13 +22,13 @@ from .ai_commentary import generate_commentary
 from .analysis import add_indicators, analyze_universe, apply_earnings, market_regime, select_picks
 from .config import DEFAULT_CONFIG_PATH, load_config
 from .data import fetch_earnings_date, fetch_fundamentals, fetch_prices
-from .report import build_messages
+from .report import build_messages, build_snapshot
 
 log = logging.getLogger("stock_agent")
 KST = ZoneInfo("Asia/Seoul")
 
 
-def run(config_path: str, dry_run: bool, use_ai: bool) -> list[str]:
+def run(config_path: str, dry_run: bool, use_ai: bool, json_path: str | None = None) -> list[str]:
     cfg = load_config(config_path)
     s = cfg.settings
     now = datetime.now(KST)
@@ -58,6 +60,10 @@ def run(config_path: str, dry_run: bool, use_ai: bool) -> list[str]:
     commentary = generate_commentary(picks, today.isoformat(), cfg.ai) if use_ai else None
 
     messages = build_messages(now, regimes, cfg.benchmarks, analyses, picks, skipped, commentary, s)
+    if json_path:
+        with open(json_path, "w", encoding="utf-8") as f:
+            json.dump(build_snapshot(now, regimes, analyses, picks, skipped), f, ensure_ascii=False, indent=1)
+        log.info("JSON 저장: %s", json_path)
     if dry_run:
         for msg in messages:
             print(html.unescape(re.sub(r"<[^>]+>", "", msg)))
@@ -73,11 +79,12 @@ def main() -> int:
     parser.add_argument("--config", default=str(DEFAULT_CONFIG_PATH))
     parser.add_argument("--dry-run", action="store_true", help="텔레그램 발송 없이 출력만")
     parser.add_argument("--no-ai", action="store_true", help="Claude 코멘트 생략")
+    parser.add_argument("--json", metavar="PATH", help="추천 결과를 JSON 파일로도 저장")
     args = parser.parse_args()
 
     logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(name)s: %(message)s")
     try:
-        run(args.config, args.dry_run, not args.no_ai)
+        run(args.config, args.dry_run, not args.no_ai, args.json)
     except Exception as exc:
         log.error("리포트 생성 실패:\n%s", traceback.format_exc())
         if not args.dry_run:

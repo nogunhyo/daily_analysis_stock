@@ -121,11 +121,20 @@ def build_pick(rank: int, a: StockAnalysis) -> str:
 _MD = [(re.compile(r"\*\*(.+?)\*\*"), r"\1"), (re.compile(r"^#{1,6}\s*", re.M), "")]
 
 
-def build_ai(c: Commentary) -> str:
-    text = c.text
+def strip_markdown(text: str) -> str:
+    """텔레그램에서 그대로 보이는 마크다운 기호(**굵게**, ## 제목) 제거."""
     for pattern, repl in _MD:
         text = pattern.sub(repl, text)
-    lines = ["<b>🤖 AI 뉴스·해자 점검</b>", escape(text)]
+    return text
+
+
+def build_text_message(title: str, text: str) -> str:
+    """일반 텍스트(AI가 쓴 글 등)를 텔레그램 HTML 메시지로. 본문은 전부 이스케이프."""
+    return f"<b>{escape(title)}</b>\n{escape(strip_markdown(text))}"
+
+
+def build_ai(c: Commentary) -> str:
+    lines = ["<b>🤖 AI 뉴스·해자 점검</b>", escape(strip_markdown(c.text))]
     if c.sources:
         lines += ["", "<b>출처</b>"]
         for title, url in c.sources:
@@ -177,3 +186,46 @@ def build_messages(
     messages.append(build_watchlist(analyses, picks))
     messages.append(build_glossary(settings))
     return messages
+
+
+def _plan_dict(p) -> dict | None:
+    if p is None:
+        return None
+    return {
+        "entry": p.entry, "stop": p.stop, "r": round(p.r, 4), "risk_pct": round(p.risk_pct * 100, 2),
+        "add1": p.add1, "add1_stop": p.add1_stop, "add2": p.add2, "add2_stop": p.add2_stop,
+        "target": p.target, "target_r": p.target_r,
+        "tranche_pcts": [round(x, 2) for x in p.tranche_pcts], "risk_budget_pct": p.risk_budget_pct,
+    }
+
+
+def _analysis_dict(a: StockAnalysis, detail: bool) -> dict:
+    d = {
+        "ticker": a.meta.ticker, "name": a.meta.name, "market": a.meta.market, "layer": a.meta.layer,
+        "score": a.score, "setup": a.setup.kind, "trend_points": a.trend.points, "rs_rank": a.rs_rank,
+        "close": a.close, "last_date": a.last_date.isoformat(),
+    }
+    if detail:
+        d.update(
+            thesis=a.meta.thesis, entry_rule=a.setup.entry_rule, pivot=a.setup.pivot,
+            atr=round(a.atr, 4), excess_63d_pct=round(a.excess_63d * 100, 2), trend_failed=a.trend.failed,
+            plan=_plan_dict(a.plan), warnings=a.warnings,
+            earnings_date=a.earnings_date.isoformat() if a.earnings_date else None,
+            fundamentals=a.fundamentals,
+        )
+    return d
+
+
+def build_snapshot(now, regimes, analyses, picks, skipped) -> dict:
+    """리포트와 같은 내용을 기계가 읽기 쉬운 dict로 (Claude 루틴이 코멘트를 쓸 때 사용)."""
+    return {
+        "generated_at": now.isoformat(),
+        "regimes": {
+            m: {"label": r.label, "vs_sma50_pct": round(r.vs_sma50 * 100, 2),
+                "vs_sma200_pct": round(r.vs_sma200 * 100, 2), "last_date": r.last_date.isoformat()}
+            for m, r in regimes.items()
+        },
+        "picks": [_analysis_dict(a, detail=True) for a in picks],
+        "universe": [_analysis_dict(a, detail=False) for a in analyses],
+        "skipped": skipped,
+    }

@@ -63,10 +63,10 @@ def test_split_message_handles_overlong_line():
 def test_env_strips_pasted_whitespace(monkeypatch):
     from stock_agent.telegram import _env
 
-    monkeypatch.setenv("TELEGRAM_BOT_TOKEN", " 123456:ABC def\n")
-    assert _env("TELEGRAM_BOT_TOKEN") == "123456:ABCdef"
-    monkeypatch.delenv("TELEGRAM_BOT_TOKEN")
-    assert _env("TELEGRAM_BOT_TOKEN") is None
+    monkeypatch.setenv("STOCK_TELEGRAM_BOT_TOKEN", " 123456:ABC def\n")
+    assert _env("STOCK_TELEGRAM_BOT_TOKEN") == "123456:ABCdef"
+    monkeypatch.delenv("STOCK_TELEGRAM_BOT_TOKEN")
+    assert _env("STOCK_TELEGRAM_BOT_TOKEN") is None
 
 
 TOKEN = "123456789:" + "A" * 20 + "b_c-" + "d" * 11  # 35자
@@ -77,7 +77,7 @@ def test_read_token_clean_and_messy(monkeypatch):
 
     for raw in (TOKEN, f" {TOKEN}\n", f":{TOKEN}", f"TELEGRAM_BOT_TOKEN :{TOKEN}",
                 TOKEN.replace(":", ": "), f'"{TOKEN}"', f"{TOKEN}\nTELEGRAM_CHAT_ID 6920194268"):
-        monkeypatch.setenv("TELEGRAM_BOT_TOKEN", raw)
+        monkeypatch.setenv("STOCK_TELEGRAM_BOT_TOKEN", raw)
         assert read_token() == TOKEN, raw
 
 
@@ -85,7 +85,7 @@ def test_read_token_rejects_garbage(monkeypatch):
     import pytest
     from stock_agent.telegram import read_token
 
-    monkeypatch.setenv("TELEGRAM_BOT_TOKEN", "not-a-token")
+    monkeypatch.setenv("STOCK_TELEGRAM_BOT_TOKEN", "not-a-token")
     with pytest.raises(RuntimeError, match="형식 오류"):
         read_token()
 
@@ -96,7 +96,7 @@ def test_read_chat_id(monkeypatch):
     for raw, want in (("6920194268", "6920194268"), (" 6920194268\n", "6920194268"),
                       ("-1001234567890", "-1001234567890"), ("TELEGRAM_CHAT_ID : 6920194268", "6920194268"),
                       (f"{TOKEN} TELEGRAM_CHAT_ID 6920194268", "6920194268")):
-        monkeypatch.setenv("TELEGRAM_CHAT_ID", raw)
+        monkeypatch.setenv("STOCK_TELEGRAM_CHAT_ID", raw)
         assert read_chat_id() == want, raw
 
 
@@ -104,7 +104,7 @@ def test_read_token_normalizes_fullwidth_and_invisible(monkeypatch):
     from stock_agent.telegram import read_token
 
     for raw in (TOKEN.replace(":", "："), "​" + TOKEN + "​", TOKEN.replace(":", ": ")):
-        monkeypatch.setenv("TELEGRAM_BOT_TOKEN", raw)
+        monkeypatch.setenv("STOCK_TELEGRAM_BOT_TOKEN", raw)
         assert read_token() == TOKEN, repr(raw)
 
 
@@ -113,9 +113,66 @@ def test_format_error_describes_structure_without_leaking(monkeypatch):
     from stock_agent.telegram import read_token
 
     secret = "123456789:" + "Z" * 30 + "!"  # 30자 + 허용 안 되는 문자
-    monkeypatch.setenv("TELEGRAM_BOT_TOKEN", secret)
+    monkeypatch.setenv("STOCK_TELEGRAM_BOT_TOKEN", secret)
     with pytest.raises(RuntimeError) as err:
         read_token()
     msg = str(err.value)
     assert "ZZZZZ" not in msg and "123456789" not in msg
     assert "첫 콜론 뒤 31자" in msg and "EXCLAMATION MARK" in msg
+
+
+def test_other_bot_variables_are_ignored(monkeypatch):
+    """같은 Claude 환경의 다른 루틴용 TELEGRAM_* 값으로 잘못 보내지 않는다."""
+    import pytest
+    from stock_agent.telegram import read_chat_id, read_token, send_all
+
+    monkeypatch.delenv("STOCK_TELEGRAM_BOT_TOKEN", raising=False)
+    monkeypatch.delenv("STOCK_TELEGRAM_CHAT_ID", raising=False)
+    monkeypatch.setenv("TELEGRAM_BOT_TOKEN", TOKEN)
+    monkeypatch.setenv("TELEGRAM_CHAT_ID", "111111111")
+    assert read_token() is None and read_chat_id() is None
+    with pytest.raises(RuntimeError, match="STOCK_TELEGRAM_BOT_TOKEN"):
+        send_all(["x"])
+
+
+def test_build_text_message_escapes_and_strips_markdown():
+    from stock_agent.report import build_text_message
+
+    out = build_text_message("🤖 Claude <코멘트>", "## 제목\n**MU** 해자 유지 & HBM <강세>")
+    assert out.startswith("<b>🤖 Claude &lt;코멘트&gt;</b>\n")
+    assert "**" not in out and "##" not in out
+    assert "MU 해자 유지 &amp; HBM &lt;강세&gt;" in out
+
+
+def test_send_file_cli(monkeypatch, tmp_path):
+    import sys
+
+    from stock_agent import telegram
+
+    sent = []
+    monkeypatch.setattr(telegram, "send_all", lambda msgs: sent.extend(msgs))
+    f = tmp_path / "c.txt"
+    f.write_text("[MU] 마이크론\n• 최근 이슈: a & b\n", encoding="utf-8")
+    monkeypatch.setattr(sys, "argv", ["telegram", "--send-file", str(f), "--title", "T"])
+    assert telegram.main() == 0
+    assert sent == ["<b>T</b>\n[MU] 마이크론\n• 최근 이슈: a &amp; b"]
+
+    empty = tmp_path / "e.txt"
+    empty.write_text("  \n", encoding="utf-8")
+    monkeypatch.setattr(sys, "argv", ["telegram", "--send-file", str(empty)])
+    assert telegram.main() == 1
+
+
+def test_snapshot_is_json_serializable():
+    import json
+
+    from stock_agent.report import build_snapshot
+
+    a = _analysis()
+    regimes = {"KR": Regime("강세", 1.0, 0.05, 0.1, date(2026, 10, 6))}
+    snap = build_snapshot(datetime(2026, 10, 8, 7, 0), regimes, [a], [a], ["X(데이터 부족)"])
+    text = json.dumps(snap, ensure_ascii=False)
+    assert snap["picks"][0]["plan"]["stop"] == 94_000
+    assert snap["picks"][0]["earnings_date"] == "2026-10-10"
+    assert "plan" not in snap["universe"][0]
+    assert "SK하이닉스" in text and snap["skipped"] == ["X(데이터 부족)"]
