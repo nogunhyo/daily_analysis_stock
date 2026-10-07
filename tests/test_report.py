@@ -176,3 +176,40 @@ def test_snapshot_is_json_serializable():
     assert snap["picks"][0]["earnings_date"] == "2026-10-10"
     assert "plan" not in snap["universe"][0]
     assert "SK하이닉스" in text and snap["skipped"] == ["X(데이터 부족)"]
+
+
+def test_connection_error_log_does_not_leak_token(monkeypatch, caplog):
+    """requests 예외 문구에는 토큰이 든 URL이 들어가므로 로그에서 가려야 한다."""
+    import pytest
+    import requests
+
+    from stock_agent import telegram
+
+    def boom(url, json=None, timeout=None):
+        raise requests.ConnectionError(f"Max retries exceeded with url: {url} (Caused by ProxyError 403)")
+
+    monkeypatch.setattr(telegram.requests, "post", boom)
+    monkeypatch.setattr(telegram.time, "sleep", lambda s: None)
+    with caplog.at_level("WARNING"), pytest.raises(RuntimeError, match="재시도 초과"):
+        telegram._post(TOKEN, "sendMessage", {}, retries=2)
+    assert caplog.records and all(TOKEN not in r.getMessage() for r in caplog.records)
+    assert "<TOKEN>" in caplog.records[0].getMessage()
+
+
+def test_public_channel_chat_id(monkeypatch):
+    from stock_agent.telegram import read_chat_id
+
+    monkeypatch.setenv("STOCK_TELEGRAM_CHAT_ID", "@my_stock_channel")
+    assert read_chat_id() == "@my_stock_channel"
+
+
+def test_snapshot_fundamentals_in_percent():
+    from stock_agent.report import build_snapshot
+
+    a = _analysis()
+    a.fundamentals = {"revenue_growth": 3.793, "operating_margin": -0.076, "forward_pe": 211.84,
+                      "earnings_growth": None, "trailing_pe": float("nan")}
+    snap = build_snapshot(datetime(2026, 10, 8, 7, 0), {}, [a], [a], [])
+    f = snap["picks"][0]["fundamentals"]
+    assert f["revenue_growth_yoy_pct"] == 379.3 and f["operating_margin_pct"] == -7.6
+    assert f["forward_pe"] == 211.8 and f["earnings_growth_yoy_pct"] is None and f["trailing_pe"] is None

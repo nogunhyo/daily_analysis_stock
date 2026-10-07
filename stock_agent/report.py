@@ -199,6 +199,25 @@ def _plan_dict(p) -> dict | None:
     }
 
 
+def _pct(x) -> float | None:
+    return round(x * 100, 1) if isinstance(x, (int, float)) and not math.isnan(x) else None
+
+
+def _fundamentals_dict(f: dict) -> dict:
+    """야후 비율값(0.379)을 % 단위(37.9)로 바꾸고 이름에 단위를 붙인다."""
+    if not f:
+        return {}
+    pe = lambda x: round(x, 1) if isinstance(x, (int, float)) and not math.isnan(x) else None  # noqa: E731
+    return {
+        "revenue_growth_yoy_pct": _pct(f.get("revenue_growth")),
+        "earnings_growth_yoy_pct": _pct(f.get("earnings_growth")),
+        "operating_margin_pct": _pct(f.get("operating_margin")),
+        "forward_pe": pe(f.get("forward_pe")),
+        "trailing_pe": pe(f.get("trailing_pe")),
+        "source": "Yahoo Finance (누락·오류 가능, 참고용)",
+    }
+
+
 def _analysis_dict(a: StockAnalysis, detail: bool) -> dict:
     d = {
         "ticker": a.meta.ticker, "name": a.meta.name, "market": a.meta.market, "layer": a.meta.layer,
@@ -211,7 +230,7 @@ def _analysis_dict(a: StockAnalysis, detail: bool) -> dict:
             atr=round(a.atr, 4), excess_63d_pct=round(a.excess_63d * 100, 2), trend_failed=a.trend.failed,
             plan=_plan_dict(a.plan), warnings=a.warnings,
             earnings_date=a.earnings_date.isoformat() if a.earnings_date else None,
-            fundamentals=a.fundamentals,
+            fundamentals=_fundamentals_dict(a.fundamentals),
         )
     return d
 

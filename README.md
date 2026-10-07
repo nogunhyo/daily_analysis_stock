@@ -67,11 +67,12 @@ AI 에이전트는 질문 하나에 추론을 수십 번 반복하고, 긴 문�
 - 같은 병목 구간(예: 메모리)에서는 1종목만 추천 → 같이 오르고 같이 빠지는 쏠림 방지
 
 ### ⑦ Claude 코멘트 루틴 (사용 중, API 요금 없음)
-매일 07:07(월~토) Claude 루틴이 같은 계산을 다시 돌린 뒤 추천 종목 뉴스를 웹검색으로 확인해
+매일 07:07(월~토) Claude 루틴이 07:00 리포트가 저장한 추천 결과(`reports/latest.json`)를 읽고 추천 종목 뉴스를 웹검색으로 확인해
 "최근 이슈 / 병목·해자 점검 / 리스크 / 셋업과 뉴스 일치 여부 / Claude 의견"을 **🤖 Claude 코멘트** 메시지로 따로 보냅니다.
 - API가 아니라 **Claude 구독 사용량**에서 차감됩니다 (사용량 확인: claude.ai/settings/usage)
 - 루틴 관리(일시정지·수정·즉시 실행): https://claude.ai/code/routines
 - 루틴 지시문 사본: [`docs/claude_routine_prompt.md`](docs/claude_routine_prompt.md)
+- 추천 기록: GitHub Actions가 매일 `reports/YYYY-MM-DD.json`으로 저장소에 기록 (나중에 추천 성과 복기용)
 - 루틴이 실패하거나 사용량 한도에 걸려도 07:00 숫자 리포트(GitHub Actions)는 그대로 옵니다
 - Claude 클라우드 환경의 Environment variables 에 `STOCK_TELEGRAM_BOT_TOKEN`, `STOCK_TELEGRAM_CHAT_ID` 가 필요합니다
   (같은 환경의 다른 루틴이 쓰는 `TELEGRAM_*` 과 섞이지 않도록 `STOCK_` 접두어 사용)
@@ -172,5 +173,6 @@ stock_agent/ai_commentary.py   Claude 웹검색 코멘트 (선택)
 stock_agent/report.py          텔레그램 메시지 작성
 stock_agent/telegram.py        텔레그램 발송 (STOCK_TELEGRAM_* 환경변수)
 docs/claude_routine_prompt.md  Claude 코멘트 루틴 지시문 사본
+reports/                       날짜별 추천 결과 기록 (GitHub Actions가 자동 커밋)
 .github/workflows/daily-report.yml   매일 자동 실행
 ```

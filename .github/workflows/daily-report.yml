@@ -13,7 +13,7 @@ on:
         default: false
 
 permissions:
-  contents: read
+  contents: write   # 추천 결과 스냅샷(reports/)을 저장소에 기록하기 위해 필요
 
 concurrency:
   group: daily-report
@@ -44,7 +44,23 @@ jobs:
           STOCK_TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
           STOCK_TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
-        run: python -m stock_agent ${{ inputs.no_ai && '--no-ai' || '' }}
+        run: python -m stock_agent --json reports/latest.json ${{ inputs.no_ai && '--no-ai' || '' }}
+
+      # 보낸 리포트와 똑같은 추천 결과를 저장소에 기록
+      # - 07:07 Claude 코멘트 루틴이 이 파일을 읽어 같은 종목을 해설 (다시 계산하면 결과가 달라질 수 있음)
+      # - 날짜별 파일이 쌓여 나중에 추천 성과를 복기할 수 있음
+      # 실패해도 리포트 발송에는 영향 없도록 continue-on-error
+      - name: Save picks snapshot
+        if: steps.report.outcome == 'success'
+        continue-on-error: true
+        run: |
+          d=$(TZ=Asia/Seoul date +%F)
+          cp reports/latest.json "reports/$d.json"
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add reports/
+          git commit -q -m "Add picks snapshot $d" || { echo "변경 없음"; exit 0; }
+          git pull -q --rebase && git push -q
 
       # 설치·테스트 단계에서 실패하면 리포트 스크립트가 실행되지 않으므로 여기서 알림
       # (리포트 스크립트 자체 실패는 스크립트가 직접 알림을 보냄)
@@ -55,6 +71,8 @@ jobs:
           TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
           RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
         run: |
-          curl -sS -X POST "https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage" \
-            -d chat_id="${TELEGRAM_CHAT_ID}" \
+          token=$(printf %s "$TELEGRAM_BOT_TOKEN" | tr -d '[:space:]')
+          chat=$(printf %s "$TELEGRAM_CHAT_ID" | tr -d '[:space:]')
+          curl -sS -o /dev/null -X POST "https://api.telegram.org/bot${token}/sendMessage" \
+            -d chat_id="${chat}" \
             --data-urlencode text="❌ 오늘 리포트 준비 단계(설치/테스트) 실패: ${RUN_URL}"

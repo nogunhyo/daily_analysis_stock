@@ -15,6 +15,7 @@ import re
 import sys
 import traceback
 from datetime import datetime
+from pathlib import Path
 from zoneinfo import ZoneInfo
 
 from . import telegram
@@ -61,6 +62,7 @@ def run(config_path: str, dry_run: bool, use_ai: bool, json_path: str | None = N
 
     messages = build_messages(now, regimes, cfg.benchmarks, analyses, picks, skipped, commentary, s)
     if json_path:
+        Path(json_path).parent.mkdir(parents=True, exist_ok=True)
         with open(json_path, "w", encoding="utf-8") as f:
             json.dump(build_snapshot(now, regimes, analyses, picks, skipped), f, ensure_ascii=False, indent=1)
         log.info("JSON 저장: %s", json_path)

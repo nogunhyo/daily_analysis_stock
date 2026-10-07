@@ -56,7 +56,7 @@ def describe_secret(raw: str) -> str:
 
 _TOKEN_STD = re.compile(r"\d{5,}:[A-Za-z0-9_-]{35}")  # BotFather 토큰: 봇번호:35자
 _TOKEN_ANY = re.compile(r"\d+:[A-Za-z0-9_-]{30,}")  # 길이가 다른 토큰 대비
-_CHAT_ID_FULL = re.compile(r"-?\d+")
+_CHAT_ID_FULL = re.compile(r"-?\d+|@[A-Za-z][A-Za-z0-9_]{4,}")  # 숫자 id 또는 공개 채널 @이름
 _CHAT_ID_PART = re.compile(r"-?\d{5,}(?![\d:])")
 
 
@@ -96,6 +96,11 @@ def read_chat_id() -> str | None:
     return matches[-1]
 
 
+def redact(text: str, token: str) -> str:
+    """오류 메시지 등에 섞인 봇 토큰을 가린다 (requests 예외 문구에는 토큰이 든 URL이 포함됨)."""
+    return text.replace(token, "<TOKEN>") if token else text
+
+
 def split_message(text: str, limit: int = MAX_LEN) -> list[str]:
     """줄 단위로 limit 이하 조각으로 분할 (HTML 태그가 줄을 넘지 않도록 작성되어 있음)."""
     chunks, current = [], ""
@@ -128,7 +133,7 @@ def _post(token: str, method: str, payload: dict, retries: int = 4) -> requests.
         try:
             resp = requests.post(url, json=payload, timeout=30)
         except requests.RequestException as exc:
-            log.warning("텔레그램 연결 실패 (%d/%d): %s", attempt + 1, retries, exc)
+            log.warning("텔레그램 연결 실패 (%d/%d): %s", attempt + 1, retries, redact(str(exc), token))
             time.sleep(2 ** (attempt + 1))
             continue
         if resp.status_code == 429:
@@ -173,8 +178,12 @@ def _print_chat_ids() -> int:
     if not token:
         print(f"{TOKEN_VAR} 환경변수를 먼저 설정하세요.")
         return 1
-    resp = requests.get(API.format(token=token, method="getUpdates"), timeout=30)
-    data = resp.json()
+    try:
+        resp = requests.get(API.format(token=token, method="getUpdates"), timeout=30)
+        data = resp.json()
+    except (requests.RequestException, ValueError) as exc:
+        print(f"텔레그램 조회 실패: {redact(str(exc), token)}")
+        return 1
     if not data.get("ok"):
         print(f"오류: {data}")
         return 1
