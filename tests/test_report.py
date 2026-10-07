@@ -98,3 +98,24 @@ def test_read_chat_id(monkeypatch):
                       (f"{TOKEN} TELEGRAM_CHAT_ID 6920194268", "6920194268")):
         monkeypatch.setenv("TELEGRAM_CHAT_ID", raw)
         assert read_chat_id() == want, raw
+
+
+def test_read_token_normalizes_fullwidth_and_invisible(monkeypatch):
+    from stock_agent.telegram import read_token
+
+    for raw in (TOKEN.replace(":", "："), "​" + TOKEN + "​", TOKEN.replace(":", ": ")):
+        monkeypatch.setenv("TELEGRAM_BOT_TOKEN", raw)
+        assert read_token() == TOKEN, repr(raw)
+
+
+def test_format_error_describes_structure_without_leaking(monkeypatch):
+    import pytest
+    from stock_agent.telegram import read_token
+
+    secret = "123456789:" + "Z" * 30 + "!"  # 30자 + 허용 안 되는 문자
+    monkeypatch.setenv("TELEGRAM_BOT_TOKEN", secret)
+    with pytest.raises(RuntimeError) as err:
+        read_token()
+    msg = str(err.value)
+    assert "ZZZZZ" not in msg and "123456789" not in msg
+    assert "첫 콜론 뒤 31자" in msg and "EXCLAMATION MARK" in msg

@@ -11,6 +11,7 @@ import os
 import re
 import sys
 import time
+import unicodedata
 
 import requests
 
@@ -21,9 +22,30 @@ MAX_LEN = 4000  # 텔레그램 한도 4096자, 여유분 확보
 
 
 def _env(name: str) -> str | None:
-    """환경변수 읽기. 복사·붙여넣기로 섞인 공백/줄바꿈 제거 (토큰과 chat id에는 공백이 없음)."""
+    """환경변수 읽기. 복사·붙여넣기로 섞인 문자 정리 (토큰과 chat id에는 공백이 없음).
+
+    - 전각 문자(：, ０ 등)를 일반 문자로 (NFKC 정규화)
+    - 공백·줄바꿈과 눈에 안 보이는 문자(zero-width space 등) 제거
+    """
     value = os.environ.get(name)
-    return "".join(value.split()) if value else None
+    if not value:
+        return None
+    value = unicodedata.normalize("NFKC", value)
+    return "".join(c for c in value if not c.isspace() and unicodedata.category(c) != "Cf")
+
+
+def describe_secret(raw: str) -> str:
+    """비밀값 자체는 노출하지 않고 구조만 설명 (문제 진단용)."""
+    head, _, tail = raw.partition(":")
+    odd = sorted(
+        {unicodedata.name(c, f"U+{ord(c):04X}") for c in raw if not (c.isascii() and (c.isalnum() or c in "_-:"))}
+    )
+    return (
+        f"길이 {len(raw)}자, 콜론(:) {raw.count(':')}개, "
+        f"첫 콜론 앞 {len(head)}자({'숫자' if head.isdigit() else '숫자 아님'}), "
+        f"첫 콜론 뒤 {len(tail)}자(정상: 숫자 8~10자 + 콜론 1개 + 35자), "
+        f"허용 안 되는 문자: {', '.join(odd) or '없음'}"
+    )
 
 
 _TOKEN_STD = re.compile(r"\d{5,}:[A-Za-z0-9_-]{35}")  # BotFather 토큰: 봇번호:35자
@@ -48,7 +70,8 @@ def read_token() -> str | None:
     if _TOKEN_ANY.fullmatch(raw):
         return raw
     raise RuntimeError(
-        "TELEGRAM_BOT_TOKEN 형식 오류: BotFather가 준 '숫자:영문' 토큰을 찾을 수 없습니다. Secret 값을 확인하세요"
+        "TELEGRAM_BOT_TOKEN 형식 오류: BotFather가 준 '숫자:영문' 토큰을 찾을 수 없습니다. "
+        f"Secret 값을 확인하세요 [{describe_secret(raw)}]"
     )
 
 
@@ -60,7 +83,9 @@ def read_chat_id() -> str | None:
         return raw
     matches = _CHAT_ID_PART.findall(raw)
     if not matches:
-        raise RuntimeError("TELEGRAM_CHAT_ID 형식 오류: 숫자로 된 chat id를 찾을 수 없습니다. Secret 값을 확인하세요")
+        raise RuntimeError(
+            f"TELEGRAM_CHAT_ID 형식 오류: 숫자로 된 chat id를 찾을 수 없습니다 [{describe_secret(raw)}]"
+        )
     log.warning("TELEGRAM_CHAT_ID 에 숫자 외 글자가 섞여 있어 숫자 부분만 사용합니다 (Secret 값 정리 권장)")
     return matches[-1]
 
