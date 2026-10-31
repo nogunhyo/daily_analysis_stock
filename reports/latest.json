@@ -1,333 +1,321 @@
 {
- "generated_at": "2026-10-30T10:22:49.984645+09:00",
+ "generated_at": "2026-10-31T10:07:40.548582+09:00",
  "regimes": {
   "US": {
-   "label": "강세",
-   "vs_sma50_pct": 0.07,
-   "vs_sma200_pct": 7.09,
-   "last_date": "2026-10-28"
+   "label": "중립",
+   "vs_sma50_pct": -1.35,
+   "vs_sma200_pct": 5.51,
+   "last_date": "2026-10-29"
   },
   "KR": {
    "label": "약세",
-   "vs_sma50_pct": -13.0,
-   "vs_sma200_pct": -10.9,
+   "vs_sma50_pct": -11.85,
+   "vs_sma200_pct": -9.71,
    "last_date": "2026-10-30"
   }
  },
  "picks": [
   {
-   "ticker": "MRVL",
-   "name": "마벨",
-   "market": "US",
-   "layer": "네트워크·광DSP/맞춤형칩",
-   "score": 83.9,
-   "setup": "눌림목",
-   "trend_points": 8,
-   "rs_rank": 93.0,
-   "close": 251.64999389648438,
-   "last_date": "2026-10-28",
-   "thesis": "광통신용 DSP칩(전기↔빛 신호 변환) 강자 + 맞춤형 AI칩. 리스크: 맞춤형칩 고객 이탈",
-   "entry_rule": "21일 EMA 부근 눌림 → 최근 거래일 고가를 넘으면(반등 확인) 매수",
-   "pivot": 301.2041915228062,
-   "atr": 15.3037,
-   "excess_63d_pct": 31.05,
-   "trend_failed": [],
-   "plan": {
-    "entry": 255.19,
-    "stop": 224.58,
-    "r": 30.61,
-    "risk_pct": 11.99,
-    "add1": 285.8,
-    "add1_stop": 255.19,
-    "add2": 316.41,
-    "add2_stop": 285.8,
-    "target": 347.02,
-    "target_r": 3,
-    "tranche_pcts": [
-     8.34,
-     5.0,
-     3.33
-    ],
-    "risk_budget_pct": 1.0
-   },
-   "warnings": [
-    "손절폭 12.0%로 큼 → 비중 자동 축소됨"
-   ],
-   "earnings_date": "2026-12-01",
-   "fundamentals": {
-    "revenue_growth_yoy_pct": 36.5,
-    "earnings_growth_yoy_pct": 50.0,
-    "operating_margin_pct": 16.7,
-    "forward_pe": 29.8,
-    "trailing_pe": 71.8,
-    "source": "Yahoo Finance (누락·오류 가능, 참고용)"
-   }
-  },
-  {
    "ticker": "MSFT",
    "name": "마이크로소프트",
    "market": "US",
    "layer": "플랫폼·클라우드",
-   "score": 78.9,
+   "score": 80.1,
    "setup": "돌파 대기",
    "trend_points": 7,
-   "rs_rank": 53.0,
-   "close": 531.010009765625,
-   "last_date": "2026-10-28",
+   "rs_rank": 57.0,
+   "close": 530.1400146484375,
+   "last_date": "2026-10-29",
    "thesis": "Azure + Copilot/에이전트 플랫폼. 기업 고객 기반(오피스·윈도우)이 해자",
    "entry_rule": "피벗(최근 20일 고가) 돌파 시 매수 (증권사 '감시주문/스톱 매수' 활용)",
    "pivot": 551.1500244140625,
-   "atr": 10.7963,
-   "excess_63d_pct": 11.67,
+   "atr": 11.5772,
+   "excess_63d_pct": 10.21,
    "trend_failed": [
     "RS≥70"
    ],
    "plan": {
-    "entry": 552.23,
-    "stop": 530.63,
-    "r": 21.6,
-    "risk_pct": 3.91,
-    "add1": 573.83,
-    "add1_stop": 552.23,
-    "add2": 595.43,
-    "add2_stop": 573.83,
-    "target": 617.03,
+    "entry": 552.31,
+    "stop": 529.15,
+    "r": 23.16,
+    "risk_pct": 4.19,
+    "add1": 575.47,
+    "add1_stop": 552.31,
+    "add2": 598.63,
+    "add2_stop": 575.47,
+    "target": 621.79,
     "target_r": 3,
     "tranche_pcts": [
-     25.0,
-     15.0,
-     10.0
+     17.89,
+     10.73,
+     7.15
     ],
-    "risk_budget_pct": 1.0
+    "risk_budget_pct": 0.75
    },
    "warnings": [],
    "earnings_date": "2027-01-27",
    "fundamentals": {
-    "revenue_growth_yoy_pct": 17.7,
-    "earnings_growth_yoy_pct": 31.7,
-    "operating_margin_pct": 45.1,
-    "forward_pe": 22.4,
-    "trailing_pe": 29.5,
+    "revenue_growth_yoy_pct": 18.8,
+    "earnings_growth_yoy_pct": 32.3,
+    "operating_margin_pct": 49.8,
+    "forward_pe": 21.6,
+    "trailing_pe": 27.2,
     "source": "Yahoo Finance (누락·오류 가능, 참고용)"
    }
-  },
-  {
-   "ticker": "TSM",
-   "name": "TSMC",
-   "market": "US",
-   "layer": "파운드리·첨단패키징",
-   "score": 76.0,
-   "setup": "눌림목",
-   "trend_points": 7,
-   "rs_rank": 60.0,
-   "close": 439.510009765625,
-   "last_date": "2026-10-28",
-   "thesis": "최첨단 공정과 CoWoS(GPU와 HBM을 한 판에 붙이는 패키징)를 사실상 독점 → 거의 모든 AI칩의 병목. 리스크: 대만 지정학",
-   "entry_rule": "21일 EMA 부근 눌림 → 최근 거래일 고가를 넘으면(반등 확인) 매수",
-   "pivot": 487.4700012207031,
-   "atr": 12.1727,
-   "excess_63d_pct": 3.0,
-   "trend_failed": [
-    "RS≥70"
-   ],
-   "plan": {
-    "entry": 442.1,
-    "stop": 417.75,
-    "r": 24.35,
-    "risk_pct": 5.51,
-    "add1": 466.45,
-    "add1_stop": 442.1,
-    "add2": 490.8,
-    "add2_stop": 466.45,
-    "target": 515.15,
-    "target_r": 3,
-    "tranche_pcts": [
-     18.16,
-     10.89,
-     7.26
-    ],
-    "risk_budget_pct": 1.0
-   },
-   "warnings": [],
-   "earnings_date": "2027-01-14",
-   "fundamentals": {
-    "revenue_growth_yoy_pct": 50.9,
-    "earnings_growth_yoy_pct": 68.7,
-    "operating_margin_pct": 58.7,
-    "forward_pe": 18.5,
-    "trailing_pe": 28.0,
-    "source": "Yahoo Finance (누락·오류 가능, 참고용)"
-   }
-  }
- ],
- "universe": [
-  {
-   "ticker": "MRVL",
-   "name": "마벨",
-   "market": "US",
-   "layer": "네트워크·광DSP/맞춤형칩",
-   "score": 83.9,
-   "setup": "눌림목",
-   "trend_points": 8,
-   "rs_rank": 93.0,
-   "close": 251.64999389648438,
-   "last_date": "2026-10-28"
-  },
-  {
-   "ticker": "MSFT",
-   "name": "마이크로소프트",
-   "market": "US",
-   "layer": "플랫폼·클라우드",
-   "score": 78.9,
-   "setup": "돌파 대기",
-   "trend_points": 7,
-   "rs_rank": 53.0,
-   "close": 531.010009765625,
-   "last_date": "2026-10-28"
-  },
-  {
-   "ticker": "TSM",
-   "name": "TSMC",
-   "market": "US",
-   "layer": "파운드리·첨단패키징",
-   "score": 76.0,
-   "setup": "눌림목",
-   "trend_points": 7,
-   "rs_rank": 60.0,
-   "close": 439.510009765625,
-   "last_date": "2026-10-28"
-  },
-  {
-   "ticker": "PLTR",
-   "name": "팔란티어",
-   "market": "US",
-   "layer": "소프트웨어·데이터/에이전트",
-   "score": 73.1,
-   "setup": "눌림목",
-   "trend_points": 8,
-   "rs_rank": 77.0,
-   "close": 196.80999755859375,
-   "last_date": "2026-10-28"
-  },
-  {
-   "ticker": "MU",
-   "name": "마이크론",
-   "market": "US",
-   "layer": "메모리·HBM",
-   "score": 70.0,
-   "setup": "셋업 없음",
-   "trend_points": 8,
-   "rs_rank": 100.0,
-   "close": 983.22998046875,
-   "last_date": "2026-10-28"
-  },
-  {
-   "ticker": "CRWD",
-   "name": "크라우드스트라이크",
-   "market": "US",
-   "layer": "소프트웨어·보안",
-   "score": 67.0,
-   "setup": "셋업 없음",
-   "trend_points": 8,
-   "rs_rank": 90.0,
-   "close": 266.6600036621094,
-   "last_date": "2026-10-28"
   },
   {
    "ticker": "AMD",
    "name": "AMD",
    "market": "US",
    "layer": "연산·GPU/CPU",
-   "score": 66.1,
-   "setup": "셋업 없음",
+   "score": 76.1,
+   "setup": "눌림목",
    "trend_points": 8,
    "rs_rank": 87.0,
-   "close": 578.4400024414062,
-   "last_date": "2026-10-28"
+   "close": 566.4199829101562,
+   "last_date": "2026-10-29",
+   "thesis": "엔비디아 대안 GPU(MI 시리즈)와 서버 CPU(EPYC). 에이전트는 도구 실행에 CPU도 많이 씀. 해자는 엔비디아보다 약한 '2번째 공급자' 위치",
+   "entry_rule": "21일 EMA 부근 눌림 → 최근 거래일 고가를 넘으면(반등 확인) 매수",
+   "pivot": 658.52001953125,
+   "atr": 25.9963,
+   "excess_63d_pct": 14.87,
+   "trend_failed": [],
+   "plan": {
+    "entry": 577.7,
+    "stop": 525.7,
+    "r": 52.0,
+    "risk_pct": 9.0,
+    "add1": 629.7,
+    "add1_stop": 577.7,
+    "add2": 681.7,
+    "add2_stop": 629.7,
+    "target": 733.7,
+    "target_r": 3,
+    "tranche_pcts": [
+     8.33,
+     5.0,
+     3.33
+    ],
+    "risk_budget_pct": 0.75
+   },
+   "warnings": [
+    "실적발표 D-3 (11/03) → 갭 위험, 발표 후 진입 고려"
+   ],
+   "earnings_date": "2026-11-03",
+   "fundamentals": {
+    "revenue_growth_yoy_pct": 50.1,
+    "earnings_growth_yoy_pct": 159.5,
+    "operating_margin_pct": 17.2,
+    "forward_pe": 31.7,
+    "trailing_pe": 128.8,
+    "source": "Yahoo Finance (누락·오류 가능, 참고용)"
+   }
+  },
+  {
+   "ticker": "PLTR",
+   "name": "팔란티어",
+   "market": "US",
+   "layer": "소프트웨어·데이터/에이전트",
+   "score": 74.0,
+   "setup": "눌림목",
+   "trend_points": 8,
+   "rs_rank": 80.0,
+   "close": 196.4199981689453,
+   "last_date": "2026-10-29",
+   "thesis": "온톨로지(기업 데이터를 AI가 이해하는 구조로 정리)로 에이전트를 실제 업무에 투입. 리스크: 매우 높은 밸류에이션",
+   "entry_rule": "21일 EMA 부근 눌림 → 최근 거래일 고가를 넘으면(반등 확인) 매수",
+   "pivot": 212.94000244140625,
+   "atr": 7.7184,
+   "excess_63d_pct": 55.53,
+   "trend_failed": [],
+   "plan": {
+    "entry": 199.28,
+    "stop": 183.84,
+    "r": 15.44,
+    "risk_pct": 7.75,
+    "add1": 214.72,
+    "add1_stop": 199.28,
+    "add2": 230.16,
+    "add2_stop": 214.72,
+    "target": 245.6,
+    "target_r": 3,
+    "tranche_pcts": [
+     9.68,
+     5.81,
+     3.87
+    ],
+    "risk_budget_pct": 0.75
+   },
+   "warnings": [
+    "실적발표 D-2 (11/02) → 갭 위험, 발표 후 진입 고려"
+   ],
+   "earnings_date": "2026-11-02",
+   "fundamentals": {
+    "revenue_growth_yoy_pct": 92.8,
+    "earnings_growth_yoy_pct": 215.4,
+    "operating_margin_pct": 47.1,
+    "forward_pe": 78.8,
+    "trailing_pe": 158.7,
+    "source": "Yahoo Finance (누락·오류 가능, 참고용)"
+   }
+  }
+ ],
+ "universe": [
+  {
+   "ticker": "MSFT",
+   "name": "마이크로소프트",
+   "market": "US",
+   "layer": "플랫폼·클라우드",
+   "score": 80.1,
+   "setup": "돌파 대기",
+   "trend_points": 7,
+   "rs_rank": 57.0,
+   "close": 530.1400146484375,
+   "last_date": "2026-10-29"
+  },
+  {
+   "ticker": "AMD",
+   "name": "AMD",
+   "market": "US",
+   "layer": "연산·GPU/CPU",
+   "score": 76.1,
+   "setup": "눌림목",
+   "trend_points": 8,
+   "rs_rank": 87.0,
+   "close": 566.4199829101562,
+   "last_date": "2026-10-29"
+  },
+  {
+   "ticker": "PLTR",
+   "name": "팔란티어",
+   "market": "US",
+   "layer": "소프트웨어·데이터/에이전트",
+   "score": 74.0,
+   "setup": "눌림목",
+   "trend_points": 8,
+   "rs_rank": 80.0,
+   "close": 196.4199981689453,
+   "last_date": "2026-10-29"
+  },
+  {
+   "ticker": "CRWD",
+   "name": "크라우드스트라이크",
+   "market": "US",
+   "layer": "소프트웨어·보안",
+   "score": 67.9,
+   "setup": "셋업 없음",
+   "trend_points": 8,
+   "rs_rank": 93.0,
+   "close": 261.1499938964844,
+   "last_date": "2026-10-29"
   },
   {
    "ticker": "LITE",
    "name": "루멘텀",
    "market": "US",
    "layer": "네트워크·광레이저",
-   "score": 64.1,
+   "score": 65.0,
    "setup": "셋업 없음",
    "trend_points": 7,
-   "rs_rank": 97.0,
-   "close": 913.9500122070312,
-   "last_date": "2026-10-28"
+   "rs_rank": 100.0,
+   "close": 919.530029296875,
+   "last_date": "2026-10-29"
   },
   {
-   "ticker": "AMZN",
-   "name": "아마존",
+   "ticker": "MU",
+   "name": "마이크론",
    "market": "US",
-   "layer": "플랫폼·클라우드/자체칩",
-   "score": 62.9,
-   "setup": "돌파 대기",
-   "trend_points": 5,
-   "rs_rank": 33.0,
-   "close": 254.60000610351562,
-   "last_date": "2026-10-28"
+   "layer": "메모리·HBM",
+   "score": 59.1,
+   "setup": "셋업 없음",
+   "trend_points": 6,
+   "rs_rank": 97.0,
+   "close": 934.27001953125,
+   "last_date": "2026-10-29"
+  },
+  {
+   "ticker": "MRVL",
+   "name": "마벨",
+   "market": "US",
+   "layer": "네트워크·광DSP/맞춤형칩",
+   "score": 57.0,
+   "setup": "셋업 없음",
+   "trend_points": 6,
+   "rs_rank": 90.0,
+   "close": 218.33999633789062,
+   "last_date": "2026-10-29"
   },
   {
    "ticker": "NET",
    "name": "클라우드플레어",
    "market": "US",
    "layer": "소프트웨어·엣지네트워크/보안",
-   "score": 56.9,
+   "score": 56.0,
    "setup": "셋업 없음",
    "trend_points": 7,
-   "rs_rank": 73.0,
-   "close": 318.7200012207031,
-   "last_date": "2026-10-28"
+   "rs_rank": 70.0,
+   "close": 310.29998779296875,
+   "last_date": "2026-10-29"
   },
   {
-   "ticker": "ALAB",
-   "name": "아스테라 랩스",
+   "ticker": "VRT",
+   "name": "버티브",
    "market": "US",
-   "layer": "네트워크·칩간연결",
-   "score": 54.0,
-   "setup": "셋업 없음",
-   "trend_points": 6,
-   "rs_rank": 80.0,
-   "close": 297.20001220703125,
-   "last_date": "2026-10-28"
-  },
-  {
-   "ticker": "NOW",
-   "name": "서비스나우",
-   "market": "US",
-   "layer": "소프트웨어·워크플로",
-   "score": 50.1,
-   "setup": "셋업 없음",
-   "trend_points": 6,
-   "rs_rank": 67.0,
-   "close": 150.1300048828125,
-   "last_date": "2026-10-28"
+   "layer": "전력·냉각",
+   "score": 50.0,
+   "setup": "돌파 대기",
+   "trend_points": 4,
+   "rs_rank": 40.0,
+   "close": 245.9199981689453,
+   "last_date": "2026-10-29"
   },
   {
    "ticker": "ASML",
    "name": "ASML",
    "market": "US",
    "layer": "장비·EUV",
-   "score": 47.1,
+   "score": 48.9,
    "setup": "셋업 없음",
    "trend_points": 6,
-   "rs_rank": 57.0,
-   "close": 1662.8499755859375,
-   "last_date": "2026-10-28"
+   "rs_rank": 63.0,
+   "close": 1675.699951171875,
+   "last_date": "2026-10-29"
+  },
+  {
+   "ticker": "TSM",
+   "name": "TSMC",
+   "market": "US",
+   "layer": "파운드리·첨단패키징",
+   "score": 48.0,
+   "setup": "셋업 없음",
+   "trend_points": 6,
+   "rs_rank": 60.0,
+   "close": 431.80999755859375,
+   "last_date": "2026-10-29"
+  },
+  {
+   "ticker": "ALAB",
+   "name": "아스테라 랩스",
+   "market": "US",
+   "layer": "네트워크·칩간연결",
+   "score": 46.9,
+   "setup": "셋업 없음",
+   "trend_points": 5,
+   "rs_rank": 73.0,
+   "close": 290.42999267578125,
+   "last_date": "2026-10-29"
   },
   {
    "ticker": "ANET",
    "name": "아리스타 네트웍스",
    "market": "US",
    "layer": "네트워크·스위치",
-   "score": 45.0,
+   "score": 45.9,
    "setup": "셋업 없음",
    "trend_points": 6,
-   "rs_rank": 50.0,
-   "close": 186.72000122070312,
-   "last_date": "2026-10-28"
+   "rs_rank": 53.0,
+   "close": 184.22000122070312,
+   "last_date": "2026-10-29"
   },
   {
    "ticker": "000660.KS",
@@ -338,7 +326,19 @@
    "setup": "셋업 없음",
    "trend_points": 4,
    "rs_rank": 83.0,
-   "close": 1398000.0,
+   "close": 1418000.0,
+   "last_date": "2026-10-30"
+  },
+  {
+   "ticker": "005930.KS",
+   "name": "삼성전자",
+   "market": "KR",
+   "layer": "메모리·파운드리",
+   "score": 43.1,
+   "setup": "셋업 없음",
+   "trend_points": 4,
+   "rs_rank": 77.0,
+   "close": 225000.0,
    "last_date": "2026-10-30"
   },
   {
@@ -350,32 +350,44 @@
    "setup": "셋업 없음",
    "trend_points": 6,
    "rs_rank": 43.0,
-   "close": 215.3800048828125,
-   "last_date": "2026-10-28"
-  },
-  {
-   "ticker": "005930.KS",
-   "name": "삼성전자",
-   "market": "KR",
-   "layer": "메모리·파운드리",
-   "score": 41.0,
-   "setup": "셋업 없음",
-   "trend_points": 4,
-   "rs_rank": 70.0,
-   "close": 221000.0,
-   "last_date": "2026-10-30"
+   "close": 213.66000366210938,
+   "last_date": "2026-10-29"
   },
   {
    "ticker": "010120.KS",
    "name": "LS ELECTRIC",
    "market": "KR",
    "layer": "전력·배전",
-   "score": 33.9,
+   "score": 35.1,
    "setup": "셋업 없음",
    "trend_points": 3,
-   "rs_rank": 63.0,
-   "close": 149900.0,
+   "rs_rank": 67.0,
+   "close": 149600.0,
    "last_date": "2026-10-30"
+  },
+  {
+   "ticker": "ETN",
+   "name": "이튼",
+   "market": "US",
+   "layer": "전력·배전/UPS",
+   "score": 31.1,
+   "setup": "셋업 없음",
+   "trend_points": 4,
+   "rs_rank": 37.0,
+   "close": 393.7200012207031,
+   "last_date": "2026-10-29"
+  },
+  {
+   "ticker": "GEV",
+   "name": "GE 버노바",
+   "market": "US",
+   "layer": "전력·가스터빈/전력망",
+   "score": 30.0,
+   "setup": "셋업 없음",
+   "trend_points": 3,
+   "rs_rank": 50.0,
+   "close": 887.8499755859375,
+   "last_date": "2026-10-29"
   },
   {
    "ticker": "COHR",
@@ -386,92 +398,80 @@
    "setup": "셋업 없음",
    "trend_points": 3,
    "rs_rank": 47.0,
-   "close": 239.58999633789062,
-   "last_date": "2026-10-28"
+   "close": 237.22000122070312,
+   "last_date": "2026-10-29"
   },
   {
-   "ticker": "ETN",
-   "name": "이튼",
-   "market": "US",
-   "layer": "전력·배전/UPS",
-   "score": 29.0,
-   "setup": "셋업 없음",
-   "trend_points": 4,
-   "rs_rank": 30.0,
-   "close": 392.8800048828125,
-   "last_date": "2026-10-28"
-  },
-  {
-   "ticker": "VRT",
-   "name": "버티브",
-   "market": "US",
-   "layer": "전력·냉각",
-   "score": 27.0,
-   "setup": "셋업 없음",
-   "trend_points": 3,
-   "rs_rank": 40.0,
-   "close": 242.94000244140625,
-   "last_date": "2026-10-28"
-  },
-  {
-   "ticker": "GEV",
-   "name": "GE 버노바",
-   "market": "US",
-   "layer": "전력·가스터빈/전력망",
-   "score": 26.1,
-   "setup": "셋업 없음",
-   "trend_points": 3,
-   "rs_rank": 37.0,
-   "close": 878.030029296875,
-   "last_date": "2026-10-28"
-  },
-  {
-   "ticker": "CRDO",
-   "name": "크레도",
-   "market": "US",
-   "layer": "네트워크·고속케이블",
-   "score": 23.1,
-   "setup": "셋업 없음",
-   "trend_points": 3,
-   "rs_rank": 27.0,
-   "close": 173.69000244140625,
-   "last_date": "2026-10-28"
-  },
-  {
-   "ticker": "GOOGL",
-   "name": "알파벳",
+   "ticker": "AMZN",
+   "name": "아마존",
    "market": "US",
    "layer": "플랫폼·클라우드/자체칩",
-   "score": 21.9,
+   "score": 28.1,
    "setup": "셋업 없음",
-   "trend_points": 3,
-   "rs_rank": 23.0,
-   "close": 324.8900146484375,
-   "last_date": "2026-10-28"
+   "trend_points": 4,
+   "rs_rank": 27.0,
+   "close": 243.7899932861328,
+   "last_date": "2026-10-29"
   },
   {
    "ticker": "042700.KS",
    "name": "한미반도체",
    "market": "KR",
    "layer": "장비·HBM 본더",
-   "score": 21.0,
+   "score": 24.9,
    "setup": "셋업 없음",
    "trend_points": 3,
-   "rs_rank": 20.0,
-   "close": 185500.0,
+   "rs_rank": 33.0,
+   "close": 182700.0,
    "last_date": "2026-10-30"
+  },
+  {
+   "ticker": "CRDO",
+   "name": "크레도",
+   "market": "US",
+   "layer": "네트워크·고속케이블",
+   "score": 24.0,
+   "setup": "셋업 없음",
+   "trend_points": 3,
+   "rs_rank": 30.0,
+   "close": 165.2899932861328,
+   "last_date": "2026-10-29"
+  },
+  {
+   "ticker": "NOW",
+   "name": "서비스나우",
+   "market": "US",
+   "layer": "소프트웨어·워크플로",
+   "score": 21.9,
+   "setup": "셋업 없음",
+   "trend_points": 3,
+   "rs_rank": 23.0,
+   "close": 109.66999816894531,
+   "last_date": "2026-10-29"
   },
   {
    "ticker": "AVGO",
    "name": "브로드컴",
    "market": "US",
    "layer": "연산·맞춤형칩/네트워크",
-   "score": 15.1,
+   "score": 16.0,
    "setup": "셋업 없음",
    "trend_points": 2,
-   "rs_rank": 17.0,
-   "close": 351.80999755859375,
-   "last_date": "2026-10-28"
+   "rs_rank": 20.0,
+   "close": 345.0,
+   "last_date": "2026-10-29"
+  },
+  {
+   "ticker": "GOOGL",
+   "name": "알파벳",
+   "market": "US",
+   "layer": "플랫폼·클라우드/자체칩",
+   "score": 13.9,
+   "setup": "셋업 없음",
+   "trend_points": 2,
+   "rs_rank": 13.0,
+   "close": 283.82000732421875,
+   "last_date": "2026-10-29"
   },
   {
    "ticker": "298040.KS",
@@ -482,7 +482,7 @@
    "setup": "셋업 없음",
    "trend_points": 2,
    "rs_rank": 10.0,
-   "close": 1792000.0,
+   "close": 1809000.0,
    "last_date": "2026-10-30"
   },
   {
@@ -490,12 +490,12 @@
    "name": "컨스텔레이션 에너지",
    "market": "US",
    "layer": "전력·원전",
-   "score": 3.9,
+   "score": 5.1,
    "setup": "셋업 없음",
    "trend_points": 0,
-   "rs_rank": 13.0,
-   "close": 258.0799865722656,
-   "last_date": "2026-10-28"
+   "rs_rank": 17.0,
+   "close": 264.5799865722656,
+   "last_date": "2026-10-29"
   },
   {
    "ticker": "034020.KS",
@@ -506,7 +506,7 @@
    "setup": "셋업 없음",
    "trend_points": 0,
    "rs_rank": 7.0,
-   "close": 54600.0,
+   "close": 54800.0,
    "last_date": "2026-10-30"
   },
   {
@@ -518,7 +518,7 @@
    "setup": "셋업 없음",
    "trend_points": 0,
    "rs_rank": 3.0,
-   "close": 427000.0,
+   "close": 424500.0,
    "last_date": "2026-10-30"
   }
  ],
