@@ -1,105 +1,83 @@
 {
- "generated_at": "2026-11-16T10:26:29.211535+09:00",
+ "generated_at": "2026-11-17T13:12:36.904453+09:00",
  "regimes": {
   "US": {
    "label": "약세",
-   "vs_sma50_pct": -5.27,
-   "vs_sma200_pct": -0.19,
-   "last_date": "2026-11-13"
+   "vs_sma50_pct": -7.65,
+   "vs_sma200_pct": -2.89,
+   "last_date": "2026-11-16"
   },
   "KR": {
    "label": "약세",
-   "vs_sma50_pct": -16.35,
-   "vs_sma200_pct": -19.19,
-   "last_date": "2026-11-16"
+   "vs_sma50_pct": -19.17,
+   "vs_sma200_pct": -22.36,
+   "last_date": "2026-11-17"
   }
  },
  "picks": [
   {
-   "ticker": "MSFT",
-   "name": "마이크로소프트",
+   "ticker": "AMZN",
+   "name": "아마존",
    "market": "US",
-   "layer": "플랫폼·클라우드",
-   "score": 87.0,
+   "layer": "플랫폼·클라우드/자체칩",
+   "score": 79.9,
    "setup": "눌림목",
-   "trend_points": 8,
-   "rs_rank": 80.0,
-   "close": 523.8800048828125,
-   "last_date": "2026-11-13",
-   "thesis": "Azure + Copilot/에이전트 플랫폼. 기업 고객 기반(오피스·윈도우)이 해자",
+   "trend_points": 7,
+   "rs_rank": 73.0,
+   "close": 257.75,
+   "last_date": "2026-11-16",
+   "thesis": "최대 클라우드 AWS, 자체칩(Trainium)으로 추론 원가 절감",
    "entry_rule": "21일 EMA 부근 눌림 → 최근 거래일 고가를 넘으면(반등 확인) 매수",
-   "pivot": 559.1500244140625,
-   "atr": 15.2172,
-   "excess_63d_pct": 16.02,
-   "trend_failed": [],
+   "pivot": 275.3399963378906,
+   "atr": 9.146,
+   "excess_63d_pct": 7.02,
+   "trend_failed": [
+    "50일선>150·200일선"
+   ],
    "plan": {
-    "entry": 527.94,
-    "stop": 501.15,
-    "r": 26.79,
-    "risk_pct": 5.07,
-    "add1": 554.73,
-    "add1_stop": 527.94,
-    "add2": 581.52,
-    "add2_stop": 554.73,
-    "target": 608.31,
+    "entry": 263.83,
+    "stop": 245.53,
+    "r": 18.3,
+    "risk_pct": 6.94,
+    "add1": 282.13,
+    "add1_stop": 263.83,
+    "add2": 300.43,
+    "add2_stop": 282.13,
+    "target": 318.73,
     "target_r": 3,
     "tranche_pcts": [
-     9.85,
-     5.91,
-     3.94
+     7.21,
+     4.33,
+     2.88
     ],
     "risk_budget_pct": 0.5
    },
    "warnings": [
     "시장 약세 구간 → 1회 위험 절반으로 축소"
    ],
-   "earnings_date": "2027-01-27",
+   "earnings_date": null,
    "fundamentals": {
-    "revenue_growth_yoy_pct": 18.8,
-    "earnings_growth_yoy_pct": 32.3,
-    "operating_margin_pct": 47.1,
-    "forward_pe": 21.7,
-    "trailing_pe": 27.3,
+    "revenue_growth_yoy_pct": 12.1,
+    "earnings_growth_yoy_pct": -3.1,
+    "operating_margin_pct": 13.1,
+    "forward_pe": 23.6,
+    "trailing_pe": 21.6,
     "source": "Yahoo Finance (누락·오류 가능, 참고용)"
    }
   }
  ],
  "universe": [
   {
-   "ticker": "MSFT",
-   "name": "마이크로소프트",
-   "market": "US",
-   "layer": "플랫폼·클라우드",
-   "score": 87.0,
-   "setup": "눌림목",
-   "trend_points": 8,
-   "rs_rank": 80.0,
-   "close": 523.8800048828125,
-   "last_date": "2026-11-13"
-  },
-  {
    "ticker": "AMZN",
    "name": "아마존",
    "market": "US",
    "layer": "플랫폼·클라우드/자체칩",
-   "score": 81.0,
-   "setup": "돌파 대기",
+   "score": 79.9,
+   "setup": "눌림목",
    "trend_points": 7,
-   "rs_rank": 70.0,
-   "close": 266.6600036621094,
-   "last_date": "2026-11-13"
-  },
-  {
-   "ticker": "ANET",
-   "name": "아리스타 네트웍스",
-   "market": "US",
-   "layer": "네트워크·스위치",
-   "score": 66.1,
-   "setup": "셋업 없음",
-   "trend_points": 8,
-   "rs_rank": 87.0,
-   "close": 197.2899932861328,
-   "last_date": "2026-11-13"
+   "rs_rank": 73.0,
+   "close": 257.75,
+   "last_date": "2026-11-16"
   },
   {
    "ticker": "AMD",
@@ -110,8 +88,8 @@
    "setup": "셋업 없음",
    "trend_points": 7,
    "rs_rank": 100.0,
-   "close": 534.0599975585938,
-   "last_date": "2026-11-13"
+   "close": 504.2799987792969,
+   "last_date": "2026-11-16"
   },
   {
    "ticker": "CRWD",
@@ -122,8 +100,8 @@
    "setup": "셋업 없음",
    "trend_points": 7,
    "rs_rank": 93.0,
-   "close": 226.61000061035156,
-   "last_date": "2026-11-13"
+   "close": 223.2100067138672,
+   "last_date": "2026-11-16"
   },
   {
    "ticker": "NET",
@@ -134,8 +112,32 @@
    "setup": "셋업 없음",
    "trend_points": 7,
    "rs_rank": 90.0,
-   "close": 305.80999755859375,
-   "last_date": "2026-11-13"
+   "close": 293.5899963378906,
+   "last_date": "2026-11-16"
+  },
+  {
+   "ticker": "ANET",
+   "name": "아리스타 네트웍스",
+   "market": "US",
+   "layer": "네트워크·스위치",
+   "score": 61.1,
+   "setup": "셋업 없음",
+   "trend_points": 7,
+   "rs_rank": 87.0,
+   "close": 187.02000427246094,
+   "last_date": "2026-11-16"
+  },
+  {
+   "ticker": "MSFT",
+   "name": "마이크로소프트",
+   "market": "US",
+   "layer": "플랫폼·클라우드",
+   "score": 59.9,
+   "setup": "셋업 없음",
+   "trend_points": 7,
+   "rs_rank": 83.0,
+   "close": 517.989990234375,
+   "last_date": "2026-11-16"
   },
   {
    "ticker": "MU",
@@ -146,20 +148,20 @@
    "setup": "셋업 없음",
    "trend_points": 5,
    "rs_rank": 97.0,
-   "close": 778.3099975585938,
-   "last_date": "2026-11-13"
+   "close": 719.02001953125,
+   "last_date": "2026-11-16"
   },
   {
    "ticker": "MRVL",
    "name": "마벨",
    "market": "US",
    "layer": "네트워크·광DSP/맞춤형칩",
-   "score": 49.9,
+   "score": 49.0,
    "setup": "셋업 없음",
    "trend_points": 5,
-   "rs_rank": 83.0,
-   "close": 156.75999450683594,
-   "last_date": "2026-11-13"
+   "rs_rank": 80.0,
+   "close": 145.36000061035156,
+   "last_date": "2026-11-16"
   },
   {
    "ticker": "PLTR",
@@ -170,20 +172,20 @@
    "setup": "셋업 없음",
    "trend_points": 6,
    "rs_rank": 63.0,
-   "close": 167.99000549316406,
-   "last_date": "2026-11-13"
+   "close": 160.38999938964844,
+   "last_date": "2026-11-16"
   },
   {
    "ticker": "CEG",
    "name": "컨스텔레이션 에너지",
    "market": "US",
    "layer": "전력·원전",
-   "score": 47.0,
+   "score": 47.9,
    "setup": "돌파 대기",
    "trend_points": 2,
-   "rs_rank": 50.0,
-   "close": 280.20001220703125,
-   "last_date": "2026-11-13"
+   "rs_rank": 53.0,
+   "close": 277.82000732421875,
+   "last_date": "2026-11-16"
   },
   {
    "ticker": "005930.KS",
@@ -194,31 +196,31 @@
    "setup": "셋업 없음",
    "trend_points": 4,
    "rs_rank": 77.0,
-   "close": 203000.0,
-   "last_date": "2026-11-16"
+   "close": 191900.0,
+   "last_date": "2026-11-17"
   },
   {
    "ticker": "TSM",
    "name": "TSMC",
    "market": "US",
    "layer": "파운드리·첨단패키징",
-   "score": 43.0,
+   "score": 42.1,
    "setup": "셋업 없음",
    "trend_points": 5,
-   "rs_rank": 60.0,
-   "close": 398.7300109863281,
-   "last_date": "2026-11-13"
+   "rs_rank": 57.0,
+   "close": 373.45001220703125,
+   "last_date": "2026-11-16"
   },
   {
-   "ticker": "000660.KS",
-   "name": "SK하이닉스",
-   "market": "KR",
-   "layer": "메모리·HBM",
-   "score": 41.9,
+   "ticker": "ALAB",
+   "name": "아스테라 랩스",
+   "market": "US",
+   "layer": "네트워크·칩간연결",
+   "score": 41.0,
    "setup": "셋업 없음",
    "trend_points": 4,
-   "rs_rank": 73.0,
-   "close": 1174000.0,
+   "rs_rank": 70.0,
+   "close": 202.33999633789062,
    "last_date": "2026-11-16"
   },
   {
@@ -226,36 +228,36 @@
    "name": "루멘텀",
    "market": "US",
    "layer": "네트워크·광레이저",
-   "score": 37.1,
+   "score": 38.0,
    "setup": "셋업 없음",
    "trend_points": 4,
-   "rs_rank": 57.0,
-   "close": 596.6199951171875,
-   "last_date": "2026-11-13"
+   "rs_rank": 60.0,
+   "close": 546.0,
+   "last_date": "2026-11-16"
   },
   {
-   "ticker": "ALAB",
-   "name": "아스테라 랩스",
-   "market": "US",
-   "layer": "네트워크·칩간연결",
+   "ticker": "000660.KS",
+   "name": "SK하이닉스",
+   "market": "KR",
+   "layer": "메모리·HBM",
    "score": 35.1,
    "setup": "셋업 없음",
    "trend_points": 3,
    "rs_rank": 67.0,
-   "close": 221.8300018310547,
-   "last_date": "2026-11-13"
+   "close": 1128000.0,
+   "last_date": "2026-11-17"
   },
   {
    "ticker": "ASML",
    "name": "ASML",
    "market": "US",
    "layer": "장비·EUV",
-   "score": 30.9,
+   "score": 30.0,
    "setup": "셋업 없음",
    "trend_points": 3,
-   "rs_rank": 53.0,
-   "close": 1495.1600341796875,
-   "last_date": "2026-11-13"
+   "rs_rank": 50.0,
+   "close": 1406.7900390625,
+   "last_date": "2026-11-16"
   },
   {
    "ticker": "GEV",
@@ -266,19 +268,7 @@
    "setup": "셋업 없음",
    "trend_points": 3,
    "rs_rank": 47.0,
-   "close": 803.1300048828125,
-   "last_date": "2026-11-13"
-  },
-  {
-   "ticker": "042700.KS",
-   "name": "한미반도체",
-   "market": "KR",
-   "layer": "장비·HBM 본더",
-   "score": 24.0,
-   "setup": "셋업 없음",
-   "trend_points": 3,
-   "rs_rank": 30.0,
-   "close": 176900.0,
+   "close": 763.5700073242188,
    "last_date": "2026-11-16"
   },
   {
@@ -286,48 +276,36 @@
    "name": "코히런트",
    "market": "US",
    "layer": "네트워크·광트랜시버",
+   "score": 24.9,
+   "setup": "셋업 없음",
+   "trend_points": 3,
+   "rs_rank": 33.0,
+   "close": 203.42999267578125,
+   "last_date": "2026-11-16"
+  },
+  {
+   "ticker": "042700.KS",
+   "name": "한미반도체",
+   "market": "KR",
+   "layer": "장비·HBM 본더",
    "score": 23.1,
    "setup": "셋업 없음",
    "trend_points": 3,
    "rs_rank": 27.0,
-   "close": 218.14999389648438,
-   "last_date": "2026-11-13"
+   "close": 167500.0,
+   "last_date": "2026-11-17"
   },
   {
-   "ticker": "AVGO",
-   "name": "브로드컴",
+   "ticker": "ETN",
+   "name": "이튼",
    "market": "US",
-   "layer": "연산·맞춤형칩/네트워크",
-   "score": 22.9,
-   "setup": "셋업 없음",
-   "trend_points": 2,
-   "rs_rank": 43.0,
-   "close": 347.010009765625,
-   "last_date": "2026-11-13"
-  },
-  {
-   "ticker": "VRT",
-   "name": "버티브",
-   "market": "US",
-   "layer": "전력·냉각",
-   "score": 21.9,
-   "setup": "셋업 없음",
-   "trend_points": 3,
-   "rs_rank": 23.0,
-   "close": 202.07000732421875,
-   "last_date": "2026-11-13"
-  },
-  {
-   "ticker": "NOW",
-   "name": "서비스나우",
-   "market": "US",
-   "layer": "소프트웨어·워크플로",
+   "layer": "전력·배전/UPS",
    "score": 21.1,
    "setup": "셋업 없음",
    "trend_points": 2,
    "rs_rank": 37.0,
-   "close": 102.25,
-   "last_date": "2026-11-13"
+   "close": 336.8800048828125,
+   "last_date": "2026-11-16"
   },
   {
    "ticker": "NVDA",
@@ -338,8 +316,8 @@
    "setup": "셋업 없음",
    "trend_points": 3,
    "rs_rank": 20.0,
-   "close": 162.85000610351562,
-   "last_date": "2026-11-13"
+   "close": 156.13999938964844,
+   "last_date": "2026-11-16"
   },
   {
    "ticker": "010120.KS",
@@ -350,20 +328,20 @@
    "setup": "셋업 없음",
    "trend_points": 3,
    "rs_rank": 17.0,
-   "close": 124000.0,
-   "last_date": "2026-11-16"
+   "close": 114600.0,
+   "last_date": "2026-11-17"
   },
   {
-   "ticker": "ETN",
-   "name": "이튼",
+   "ticker": "NOW",
+   "name": "서비스나우",
    "market": "US",
-   "layer": "전력·배전/UPS",
-   "score": 19.9,
+   "layer": "소프트웨어·워크플로",
+   "score": 19.0,
    "setup": "셋업 없음",
    "trend_points": 2,
-   "rs_rank": 33.0,
-   "close": 352.9700012207031,
-   "last_date": "2026-11-13"
+   "rs_rank": 30.0,
+   "close": 99.37000274658203,
+   "last_date": "2026-11-16"
   },
   {
    "ticker": "CRDO",
@@ -374,8 +352,20 @@
    "setup": "셋업 없음",
    "trend_points": 3,
    "rs_rank": 13.0,
-   "close": 131.50999450683594,
-   "last_date": "2026-11-13"
+   "close": 120.70999908447266,
+   "last_date": "2026-11-16"
+  },
+  {
+   "ticker": "AVGO",
+   "name": "브로드컴",
+   "market": "US",
+   "layer": "연산·맞춤형칩/네트워크",
+   "score": 17.9,
+   "setup": "셋업 없음",
+   "trend_points": 1,
+   "rs_rank": 43.0,
+   "close": 333.3999938964844,
+   "last_date": "2026-11-16"
   },
   {
    "ticker": "GOOGL",
@@ -386,8 +376,20 @@
    "setup": "셋업 없음",
    "trend_points": 1,
    "rs_rank": 40.0,
-   "close": 295.7699890136719,
-   "last_date": "2026-11-13"
+   "close": 283.7200012207031,
+   "last_date": "2026-11-16"
+  },
+  {
+   "ticker": "VRT",
+   "name": "버티브",
+   "market": "US",
+   "layer": "전력·냉각",
+   "score": 16.9,
+   "setup": "셋업 없음",
+   "trend_points": 2,
+   "rs_rank": 23.0,
+   "close": 188.6699981689453,
+   "last_date": "2026-11-16"
   },
   {
    "ticker": "298040.KS",
@@ -398,8 +400,8 @@
    "setup": "셋업 없음",
    "trend_points": 1,
    "rs_rank": 10.0,
-   "close": 1793000.0,
-   "last_date": "2026-11-16"
+   "close": 1660000.0,
+   "last_date": "2026-11-17"
   },
   {
    "ticker": "034020.KS",
@@ -410,8 +412,8 @@
    "setup": "셋업 없음",
    "trend_points": 0,
    "rs_rank": 7.0,
-   "close": 45550.0,
-   "last_date": "2026-11-16"
+   "close": 43150.0,
+   "last_date": "2026-11-17"
   },
   {
    "ticker": "267260.KS",
@@ -422,8 +424,8 @@
    "setup": "셋업 없음",
    "trend_points": 0,
    "rs_rank": 3.0,
-   "close": 412500.0,
-   "last_date": "2026-11-16"
+   "close": 379500.0,
+   "last_date": "2026-11-17"
   }
  ],
  "skipped": []
