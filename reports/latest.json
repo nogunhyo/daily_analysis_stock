@@ -1,5 +1,5 @@
 {
- "generated_at": "2026-11-21T11:52:13.650725+09:00",
+ "generated_at": "2026-11-23T11:01:34.446958+09:00",
  "regimes": {
   "US": {
    "label": "약세",
@@ -9,9 +9,9 @@
   },
   "KR": {
    "label": "약세",
-   "vs_sma50_pct": -20.45,
-   "vs_sma200_pct": -24.98,
-   "last_date": "2026-11-20"
+   "vs_sma50_pct": -22.37,
+   "vs_sma200_pct": -27.34,
+   "last_date": "2026-11-23"
   }
  },
  "picks": [],
@@ -101,40 +101,40 @@
    "last_date": "2026-11-20"
   },
   {
-   "ticker": "000660.KS",
-   "name": "SK하이닉스",
-   "market": "KR",
-   "layer": "메모리·HBM",
+   "ticker": "AMZN",
+   "name": "아마존",
+   "market": "US",
+   "layer": "플랫폼·클라우드/자체칩",
    "score": 44.0,
    "setup": "셋업 없음",
    "trend_points": 4,
    "rs_rank": 80.0,
-   "close": 1113000.0,
+   "close": 246.82000732421875,
    "last_date": "2026-11-20"
+  },
+  {
+   "ticker": "000660.KS",
+   "name": "SK하이닉스",
+   "market": "KR",
+   "layer": "메모리·HBM",
+   "score": 43.1,
+   "setup": "셋업 없음",
+   "trend_points": 4,
+   "rs_rank": 77.0,
+   "close": 1080000.0,
+   "last_date": "2026-11-23"
   },
   {
    "ticker": "005930.KS",
    "name": "삼성전자",
    "market": "KR",
    "layer": "메모리·파운드리",
-   "score": 43.1,
-   "setup": "셋업 없음",
-   "trend_points": 4,
-   "rs_rank": 77.0,
-   "close": 183100.0,
-   "last_date": "2026-11-20"
-  },
-  {
-   "ticker": "AMZN",
-   "name": "아마존",
-   "market": "US",
-   "layer": "플랫폼·클라우드/자체칩",
    "score": 41.9,
    "setup": "셋업 없음",
    "trend_points": 4,
    "rs_rank": 73.0,
-   "close": 246.82000732421875,
-   "last_date": "2026-11-20"
+   "close": 176700.0,
+   "last_date": "2026-11-23"
   },
   {
    "ticker": "PLTR",
@@ -221,18 +221,6 @@
    "last_date": "2026-11-20"
   },
   {
-   "ticker": "COHR",
-   "name": "코히런트",
-   "market": "US",
-   "layer": "네트워크·광트랜시버",
-   "score": 24.9,
-   "setup": "셋업 없음",
-   "trend_points": 3,
-   "rs_rank": 33.0,
-   "close": 187.22000122070312,
-   "last_date": "2026-11-20"
-  },
-  {
    "ticker": "ETN",
    "name": "이튼",
    "market": "US",
@@ -245,16 +233,28 @@
    "last_date": "2026-11-20"
   },
   {
+   "ticker": "COHR",
+   "name": "코히런트",
+   "market": "US",
+   "layer": "네트워크·광트랜시버",
+   "score": 24.0,
+   "setup": "셋업 없음",
+   "trend_points": 3,
+   "rs_rank": 30.0,
+   "close": 187.22000122070312,
+   "last_date": "2026-11-20"
+  },
+  {
    "ticker": "042700.KS",
    "name": "한미반도체",
    "market": "KR",
    "layer": "장비·HBM 본더",
-   "score": 19.0,
+   "score": 19.9,
    "setup": "셋업 없음",
    "trend_points": 2,
-   "rs_rank": 30.0,
-   "close": 153800.0,
-   "last_date": "2026-11-20"
+   "rs_rank": 33.0,
+   "close": 155900.0,
+   "last_date": "2026-11-23"
   },
   {
    "ticker": "NOW",
@@ -277,8 +277,8 @@
    "setup": "셋업 없음",
    "trend_points": 2,
    "rs_rank": 23.0,
-   "close": 109700.0,
-   "last_date": "2026-11-20"
+   "close": 110100.0,
+   "last_date": "2026-11-23"
   },
   {
    "ticker": "GOOGL",
@@ -349,8 +349,20 @@
    "setup": "셋업 없음",
    "trend_points": 1,
    "rs_rank": 13.0,
-   "close": 1679000.0,
-   "last_date": "2026-11-20"
+   "close": 1655000.0,
+   "last_date": "2026-11-23"
+  },
+  {
+   "ticker": "267260.KS",
+   "name": "HD현대일렉트릭",
+   "market": "KR",
+   "layer": "전력·초고압변압기",
+   "score": 5.9,
+   "setup": "셋업 없음",
+   "trend_points": 1,
+   "rs_rank": 3.0,
+   "close": 383500.0,
+   "last_date": "2026-11-23"
   },
   {
    "ticker": "034020.KS",
@@ -361,20 +373,8 @@
    "setup": "셋업 없음",
    "trend_points": 0,
    "rs_rank": 7.0,
-   "close": 40750.0,
-   "last_date": "2026-11-20"
-  },
-  {
-   "ticker": "267260.KS",
-   "name": "HD현대일렉트릭",
-   "market": "KR",
-   "layer": "전력·초고압변압기",
-   "score": 0.9,
-   "setup": "셋업 없음",
-   "trend_points": 0,
-   "rs_rank": 3.0,
-   "close": 386500.0,
-   "last_date": "2026-11-20"
+   "close": 39700.0,
+   "last_date": "2026-11-23"
   }
  ],
  "skipped": []
